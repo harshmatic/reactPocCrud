@@ -34,7 +34,7 @@ class Customer extends Component {
     }
 
     componentDidMount() {
-        axios.get(`http://192.168.101.162:6058/api/employees`)
+        axios.get(`http://192.168.101.162:6060/api/customers`)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 console.log(customers)
@@ -73,16 +73,18 @@ class Customer extends Component {
                                 {this.state.customers[key].firstName} {this.state.customers[key].lastName}
                             </Link>*/}
                             <a href="" onClick={this.toggle.bind(this, key)}>
-                                {this.state.customers[key].firstName} {this.state.customers[key].lastName}
+                                {this.state.customers[key].customerName}
                             </a>
                         </td>
-                        <td>2012/01/01</td>
-                        <td>Member</td>
-                        <td>{this.state.customers[key].firstName} {this.state.customers[key].lastName}</td>
-                        <td>2012/01/01</td>
-                        <td>Member</td>
-                        <td>{this.state.customers[key].firstName} {this.state.customers[key].lastName}</td>
-                        <td>2012/01/01</td>
+                        <td>{this.state.customers[key].mobile}</td>
+                        <td>{this.state.customers[key].customerEmail}</td>
+                        <td>{this.state.customers[key].dateOfBirth}</td>
+
+                        <td>{this.state.customers[key].distributorName}</td>
+                        <td>{this.state.customers[key].distributorContact}</td>
+                        {/* <td style={{visibility:'hidden'}}>{this.state.customers[key].customerAddress}</td>
+                        <td style={{visibility:'hidden'}}>{this.state.customers[key].distributorAddress}</td>*/}
+                        
                         <td>
                             <span className="badge badge-success">Active</span>
                         </td>
@@ -109,11 +111,11 @@ class Customer extends Component {
                                             <th>Contact Details</th>
                                             <th>Email id</th>
                                             <th>Date of Birth</th>
-                                            <th>Present Address</th>
                                             <th>Distributor Name</th>
-                                            <th>Distributor Address</th>
                                             <th>Distributor Contact</th>
                                             <th>Consumer Status</th>
+                                           {/*<th style={{visibility:'hidden'}}>Present Address</th>
+                                            <th style={{visibility:'hidden'}}>Distributor Address</th>*/}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -146,11 +148,17 @@ class Customer extends Component {
                                 <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this, '')} className={this.props.className}>
                                     <ModalHeader toggle={this.toggle}>Consumer Detail</ModalHeader>
                                     <ModalBody>
-                                        Consumer Name : {this.state.customer.firstName}
+                                        <div>Consumer Name : {this.state.customer.customerName}</div>
+                                       <div> Contact Details : {this.state.customer.customerName}</div>
+                                       <div>Email id : {this.state.customer.customerName}</div>
+                                       <div>Date of Birth : {this.state.customer.customerName}</div>
+                                       <div> Distributor Contact : {this.state.customer.customerName}</div>
+                                       <div> Consumer Status : {this.state.customer.customerName}</div>
+
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Link className="btn btn-primary" to={'/customer/edit/' + this.state.customer.employeeID}>Edit</Link>{' '}
-                                        <Button color="secondary" onClick={this.delete.bind(this, this.state.customer.employeeID)}>Delete</Button>
+                                        <Link className="btn btn-primary" to={'/customer/edit/' + this.state.customer.customerID}>Edit</Link>{' '}
+                                        <Button color="secondary" onClick={this.delete.bind(this, this.state.customer.customerID)}>Delete</Button>
                                     </ModalFooter>
                                 </Modal>
                             </div>
