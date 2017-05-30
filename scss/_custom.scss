@@ -1,0 +1,11 @@
+// Here you can add other styles
+.toastify{
+    z-index: 99999 !important;
+    position: fixed;
+    padding: 4px;
+    width: 350px;
+    max-width: 98%;
+    color: #999;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
