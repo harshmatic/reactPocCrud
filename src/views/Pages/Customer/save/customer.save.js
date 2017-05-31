@@ -72,7 +72,7 @@ class CustomerSave extends Component {
                 .post(`http://192.168.101.162:6060/api/customers`,this.state.customer)
                 .then(res => {
                     this.props.history.push('/customer/list');
-                    toast("Added Successfully")
+                    toast.success("Added Successfully")
                     
                 });
         }else{

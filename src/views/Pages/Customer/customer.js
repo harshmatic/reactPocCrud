@@ -13,11 +13,12 @@ class Customer extends Component {
         this.state = {
             customers: [],
             modal: false,
-            customer: {}
+            customer: {},
         };
         this.toggle = this.toggle.bind(this);
         this.delete = this.delete.bind(this);
         this.renderCustomers = this.renderCustomers.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     toggle(key, e) {
@@ -34,6 +35,15 @@ class Customer extends Component {
         }
 
     }
+    handleInputChange(e) {
+         axios.get(`http://192.168.101.162:6060/api/customers?searchQuery=`+e.target.value)
+            .then(res => {
+                const customers = res.data.map(obj => obj)
+                console.log(customers)
+                this.setState({ customers });
+            });
+
+    }
 
     componentDidMount() {
         axios.get(`http://192.168.101.162:6060/api/customers`)
@@ -48,23 +58,23 @@ class Customer extends Component {
         axios.delete(`http://192.168.101.162:6060/api/customers/` + id)
             .then(res => {
                 this.setState({
-                modal: !this.state.modal,
-                customer:{}
+                    modal: !this.state.modal,
+                    customer: {}
+                });
+                this.props.history.push('/customer/list');
+                toast("Deleted Successfully")
+
+
             });
-            this.props.history.push('/customer/list');
-        toast("Deleted Successfully")
-
-
-        });
     }
 
 
 
     renderCustomers() {
-moment.locale('en');
-  
+        moment.locale('en');
+
         return (
-            
+
             Object.keys(this.state.customers).map((key) => {
 
                 return (
@@ -119,30 +129,39 @@ moment.locale('en');
                                     filename="CustomerDetails"
                                     sheet="Customer"
                                     buttonText="Download as XLS" />  {'   '}
-                                <button type="button" className="btn btn-primary"><i className="fa fa-file-pdf-o"></i> Download as Pdf</button>
-                                <br /><br />
-                                <table id="table-to-xls" className="table table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Customer Name</th>
-                                            <th>Contact Details</th>
-                                            <th>Email id</th>
-                                            <th>Date of Birth</th>
-                                            <th style={{ display: 'none' }}>Distributor Address</th>
-                                            <th>Distributor Name</th>
-                                            <th>Distributor Contact</th>
+                               <button type="button" className="btn btn-primary"><i className="fa fa-file-pdf-o"></i> Download as Pdf</button>
+                                    {/*<span >
+                                        <button type="button" className="btn btn-primary"><i className="fa fa-search"></i></button>*/}
 
-                                            <th style={{ display: 'none' }}>Distributor Address</th>
-                                            <th>Consumer Status</th>
-                                            {/*<th style={{visibility:'hidden'}}>Present Address</th>
+                                        <input
+                                            type="text"
+                                            onKeyUp={this.handleInputChange.bind(this)}
+                                            placeholder=" Search"
+                                            style={{ float: 'right',    height: '35px' }}/>
+                                        {/*/></span>*/}
+                                    <br /><br />
+                                    <table id="table-to-xls" className="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Customer Name</th>
+                                                <th>Contact Details</th>
+                                                <th>Email id</th>
+                                                <th>Date of Birth</th>
+                                                <th style={{ display: 'none' }}>Distributor Address</th>
+                                                <th>Distributor Name</th>
+                                                <th>Distributor Contact</th>
+
+                                                <th style={{ display: 'none' }}>Distributor Address</th>
+                                                <th>Consumer Status</th>
+                                                {/*<th style={{visibility:'hidden'}}>Present Address</th>
                                             <th style={{visibility:'hidden'}}>Distributor Address</th>*/}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.renderCustomers()}
-                                    </tbody>
-                                </table>
-                                {/*<div className="row">
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {this.renderCustomers()}
+                                        </tbody>
+                                    </table>
+                                    {/*<div className="row">
                                     <div className="col-lg-6">
                                         <nav>
                                             <ul className="pagination">
@@ -165,33 +184,33 @@ moment.locale('en');
                                     </div>
 
                                 </div>*/}
-                                <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this, '')} className={this.props.className}>
-                                    <ModalHeader toggle={this.toggle}>Consumer Detail</ModalHeader>
-                                    <ModalBody>
-                                        <div><strong>Customer Name : </strong>{this.state.customer.customerName}</div>
-                                        <div> <strong>Mobile :</strong> {this.state.customer.mobile}</div>
-                                        <div> <strong>Landline :</strong> {this.state.customer.landline}</div>
-                                        <div><strong>Email id : </strong>{this.state.customer.customerEmail}</div>
-                                        <div><strong>Date of Birth :</strong> {moment(this.state.customer.dateOfBirth).format('d MMM, Y')}</div>
-                                        <div><strong>Customer Address :</strong> {this.state.customer.customerAddress}</div>
-                                        <div><strong>Distributor Name : </strong>{this.state.customer.customerName}</div>
-                                        <div> <strong>Distributor Contact :</strong> {this.state.customer.distributorContact}</div>
-                                        <div> <strong>Distributor Address :</strong> {this.state.customer.distributorAddress}</div>
+                                    <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this, '')} className={this.props.className}>
+                                        <ModalHeader toggle={this.toggle}>Consumer Detail</ModalHeader>
+                                        <ModalBody>
+                                            <div><strong>Customer Name : </strong>{this.state.customer.customerName}</div>
+                                            <div> <strong>Mobile :</strong> {this.state.customer.mobile}</div>
+                                            <div> <strong>Landline :</strong> {this.state.customer.landline}</div>
+                                            <div><strong>Email id : </strong>{this.state.customer.customerEmail}</div>
+                                            <div><strong>Date of Birth :</strong> {moment(this.state.customer.dateOfBirth).format('d MMM, Y')}</div>
+                                            <div><strong>Customer Address :</strong> {this.state.customer.customerAddress}</div>
+                                            <div><strong>Distributor Name : </strong>{this.state.customer.customerName}</div>
+                                            <div> <strong>Distributor Contact :</strong> {this.state.customer.distributorContact}</div>
+                                            <div> <strong>Distributor Address :</strong> {this.state.customer.distributorAddress}</div>
 
 
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Link className="btn btn-primary" to={'/customer/edit/' + this.state.customer.customerID}>Edit</Link>{' '}
-                                        <Button color="secondary" onClick={this.delete.bind(this, this.state.customer.customerID)}>Delete</Button>
-                                    </ModalFooter>
-                                </Modal>
+                                        </ModalBody>
+                                        <ModalFooter>
+                                            <Link className="btn btn-primary" to={'/customer/edit/' + this.state.customer.customerID}>Edit</Link>{' '}
+                                            <Button color="secondary" onClick={this.delete.bind(this, this.state.customer.customerID)}>Delete</Button>
+                                        </ModalFooter>
+                                    </Modal>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-        )
+                )
     }
 }
 
