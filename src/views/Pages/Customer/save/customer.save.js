@@ -76,16 +76,22 @@ class CustomerSave extends Component {
                     this.props.history.push('/customer/list');
                     toast.success("Added Successfully")
                     
-                });
+                }).catch(err=> {
+                toast.error("Something went wrong");
+                
+            });
         }else{
              axios
                 .put(api+`/customers/` + this.props.match.params.employeeID,this.state.customer)
                 .then(res => {
                     const customer = res.data
                      this.props.history.push('/customer/list');
-                    toast("Updated Successfully")
+                    toast.success("Updated Successfully")
                     this.setState({customer});
-                }); 
+                }).catch(err=> {
+                toast.error("Something went wrong");
+                
+            });; 
         }
           
     }
