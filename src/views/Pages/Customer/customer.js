@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import { createBrowserHistory } from 'history';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import { api } from '../../../config';
 const pdfConverter = require('jspdf');
+export const history = createBrowserHistory();
 var config = {
   headers: {'Cache-Control': "no-cache, no-store, must-revalidate",'Content-Type': 'application/json'}
 
@@ -27,7 +29,8 @@ class Customer extends Component {
             pageCount: 0,
             pageSize: 0,
             searchString: '',
-            loader:'none'
+            loader:'none',
+            sort:{col:'',dir:''}
         };
         this.toggle = this.toggle.bind(this);
         this.toggleDelete = this.toggleDelete.bind(this);
@@ -43,6 +46,7 @@ class Customer extends Component {
         this.renderCustomers = this.renderCustomers.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePdf = this.handlePdf.bind(this);
+         this.handleSort = this.handleSort.bind(this);
     }
 
 
@@ -76,6 +80,19 @@ class Customer extends Component {
         }
 
     }
+    handleSort(key,e) {
+        this.setState({loader:''});
+        axios.get(api + `/customers?searchQuery=`+this.state.searchString+`&orderBy=`+key,config)
+            .then(res => {
+                const customers = res.data.map(obj => obj)
+                const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
+                const pageSize = JSON.parse(res.headers['x-pagination']).pageSize;
+                this.setState({ pageCount: totalPageCount });
+                this.setState({ pageSize: pageSize });
+                this.setState({ customers });
+                 this.setState({loader:'none'});
+            });
+    }
     toggleDelete(key, e) {
         e.preventDefault();
         if (!this.state.modalDelete) {
@@ -104,10 +121,19 @@ class Customer extends Component {
         });
     }
     exportPdf(e) {
-        console.log("got it")
+         window.location=api+'/customers/ExportToPdf';
+        this.setState({
+            modalExportPdf: !this.state.modalExportPdf
+        });
     }
     export(e) {
-        console.log("got it")
+        window.location=api+'/customers/ExportToExcel';
+        this.setState({
+            modalExport: !this.state.modalExport
+        });
+        //this.props.history.push('/customers/ExportToExcel');
+        //axios.get(api + `/customers/ExportToExcel`,config)
+            
     }
     handleInputChange(e) {
         var search = e.target.value;
@@ -274,9 +300,9 @@ class Customer extends Component {
                                 <table id="table-to-xls" className="table table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th>Customer Name</th>
-                                            <th>Contact Details</th>
-                                            <th>Email id</th>
+                                            <th onClick={this.handleSort.bind(this,'customerName')}>Customer Name</th>
+                                            <th onClick={this.handleSort.bind(this,'mobile')}>Contact Details</th>
+                                            <th onClick={this.handleSort.bind(this,'customerEmail')}>Email id</th>
                                             <th>Date of Birth</th>
                                             <th style={{ display: 'none' }}>Distributor Address</th>
                                             <th>Distributor Name</th>
@@ -294,29 +320,6 @@ class Customer extends Component {
                                         {this.renderCustomers()}
                                     </tbody>
                                 </table>
-                                {/*<div className="row">
-                                    <div className="col-lg-6">
-                                        <nav>
-                                            <ul className="pagination">
-                                                <li className="page-item"><a className="page-link" href="#">Prev</a></li>
-                                                <li className="page-item active">
-                                                    <a className="page-link" href="#">1</a>
-                                                </li>
-                                                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">4</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">Next</a></li>
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                    <div className="col-lg-6">
-                                       
-                                        <button type="button" className="btn btn-primary"><i className="fa fa-file-excel-o"></i> Export as Excel</button>
-                                        <button type="button" className="btn btn-primary"><i className="fa fa-file-pdf-o"></i> Export as Pdf</button>
-
-                                    </div>
-
-                                </div>*/}
                                 <div>
                                     <ReactPaginate previousLabel={"previous"}
                                         nextLabel={"next"}
