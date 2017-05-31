@@ -28,6 +28,18 @@ class CustomerSave extends Component {
                 "distributorAddress": "",
                 "distributorContact": "",
             },
+            validation:{
+                "customerName": "",
+                "mobile": "",
+                //"landline": "",
+                "customerEmail": "",
+                "dateOfBirth": "",
+                "customerAddress": "",
+                //"status": "",
+                "distributorName": "",
+                "distributorAddress": "",
+                "distributorContact": ""
+            }
          //   dateOfBirth: moment()
 
         };
@@ -36,6 +48,8 @@ class CustomerSave extends Component {
             .bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.save = this.save.bind(this);
+        this.validate = this.validate.bind(this);
+        this.ifFormValid = this.ifFormValid.bind(this);
     }
 
     componentDidMount() {
@@ -58,15 +72,55 @@ class CustomerSave extends Component {
             customer: formData
         });
     }
+    validate(event){
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        let validations = Object.assign({}, this.state.validation);
+        if(value.trim()==""){
+            validations[name] = "Required";
+        }else if(name==="customerEmail"){
+            if(EmailRegex.test(value)){
+                validations[name] = "";
+            } else {
+                validations[name] ="Not a valid email"
+            }
+        } else if(name==="dateOfBirth"){
+            if(DateRegex.test(value)){
+                validations[name] = "";
+            } else {
+                validations[name] ="Not a valid Date(MM/DD/YYYY)"
+            }
+        } else if(name==="mobile"||name==="distributorContact"){
+            if(NumberRegex.test(value)){
+                validations[name] = "";
+            } else {
+                validations[name] ="Not a valid contact number"
+            }
+        }else{
+            validations[name] = "";  
+        }
+        this.setState({
+            validation: validations
+        });
+    }
     handleChange(date) {
         let formData = Object.assign({}, this.state.customer);
         formData.dateOfBirth = date;
+        let validations = Object.assign({}, this.state.validation);
+        validations.dateOfBirth = "";
         this.setState({
+            validation: validations,
             customer: formData
         });
-        this.setState({
-            customer: formData
-        });
+    }
+    ifFormValid(){
+        for (var key in this.state.validation) {
+              if(this.state.validation[key]!==""){
+                  return true
+              }
+        }
+        return false
     }
     save(){
         if(this.state.customer.customerID==""){
@@ -106,7 +160,8 @@ class CustomerSave extends Component {
                             <strong>Customer Form</strong>
                         </div>
                         <div className="card-block">
-                            <div className="form-group">
+                         <div className="row">
+                            <div className="form-group  col-sm-6">
                                 <label htmlFor="company">Consumer Name*</label>
                                 <input
                                     type="text"
@@ -115,9 +170,11 @@ class CustomerSave extends Component {
                                     placeholder="Enter consumer's name"
                                     name='customerName' 
                                     onChange={this.handleInputChange} 
+                                    onBlur={this.validate}
                                     value={this.state.customer.customerName}/>
+                                   <span style={styles.validationError}> {this.state.validation.customerName}</span>
                             </div>
-                            <div className="form-group">
+                            <div className="form-group col-sm-6">
                                 <label htmlFor="vat">Contact Number*</label>
                                 <input
                                     type="text"
@@ -126,9 +183,13 @@ class CustomerSave extends Component {
                                     name='mobile' 
                                     onChange={this.handleInputChange} 
                                     value={this.state.customer.mobile}
+                                     onBlur={this.validate}
                                     placeholder="Enter consumer's contact number"/>
+                                   <span style={styles.validationError}> {this.state.validation.mobile}</span>                                
                             </div>
-                            <div className="form-group">
+                            </div>
+                         <div className="row">
+                            <div className="form-group col-sm-6">
                                 <label htmlFor="street">Email ID*</label>
                                 <input
                                     type="text"
@@ -137,10 +198,11 @@ class CustomerSave extends Component {
                                     name='customerEmail' 
                                     onChange={this.handleInputChange} 
                                     value={this.state.customer.customerEmail}
-                                    placeholder="Enter consumer's email"/>
+                                     onBlur={this.validate}
+                                    placeholder="Enter consumer's email"/>                      
+                                <span style={styles.validationError}> {this.state.validation.customerEmail}</span>                                
                             </div>
-                            <div className="row">
-                                <div className="form-group col-sm-4">
+                            <div className="form-group col-sm-6">
                                     <label htmlFor="city">Date Of Birth*</label><br/>
                                     <DatePicker
                                         selected={moment(this.state.customer.dateOfBirth)}
@@ -148,23 +210,29 @@ class CustomerSave extends Component {
                                         className="form-control"
                                         id="dob"
                                         name='dateOfBirth' 
-                                        placeholder="Enter consumer's DOB"/>
-                                </div>
-                                <div className="form-group col-sm-8">
+                                        onBlur={this.validate}
+                                        placeholder="Enter consumer's DOB"/>                      
+                                    <span style={styles.validationError}> {this.state.validation.dateOfBirth}</span>  
+                            </div>
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-sm-12">
                                     <label htmlFor="postal-code">Present Address*</label>
                                     <textarea
                                         id="address"
                                         name="textarea-input"
-                                        rows="9"
+                                        rows="4"
                                         className="form-control"
-                                         name='customerAddress' 
+                                        name='customerAddress' 
                                     onChange={this.handleInputChange} 
+                                     onBlur={this.validate}
                                     value={this.state.customer.customerAddress}
-                                        placeholder="Enter consumer's present address"></textarea>
-
+                                        placeholder="Enter consumer's present address"></textarea>                      
+                                <span style={styles.validationError}> {this.state.validation.customerAddress}</span>  
                                 </div>
                             </div>
-                            <div className="form-group">
+                             <div className="row">
+                            <div className="form-group col-sm-6">
                                 <label htmlFor="country">Distributor Name*</label>
                                 <input
                                     type="text"
@@ -173,9 +241,12 @@ class CustomerSave extends Component {
                                      name='distributorName' 
                                     onChange={this.handleInputChange} 
                                     value={this.state.customer.distributorName}
-                                    placeholder="Enter ditributor name"/>
+                                     onBlur={this.validate}
+                                    placeholder="Enter ditributor name"/>                      
+                                <span style={styles.validationError}> {this.state.validation.distributorName}</span>  
+                                    
                             </div>
-                            <div className="form-group">
+                            <div className="form-group col-sm-6">
                                 <label htmlFor="country">Distributor Contact*</label>
                                 <input
                                     type="text"
@@ -184,23 +255,28 @@ class CustomerSave extends Component {
                                      name='distributorContact' 
                                     onChange={this.handleInputChange} 
                                     value={this.state.customer.distributorContact}
-                                    placeholder="Enter distributor contact"/>
+                                     onBlur={this.validate}
+                                    placeholder="Enter distributor contact"/>                      
+                                <span style={styles.validationError}> {this.state.validation.distributorContact}</span>  
+                                    
+                            </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="country">Distributor Address*</label>
                                 <textarea
                                     id="address_dist"
                                     name="textarea-input"
-                                    rows="9"
+                                    rows="4"
                                     className="form-control"
                                      name='distributorAddress' 
                                     onChange={this.handleInputChange} 
                                     value={this.state.customer.distributorAddress}
-                                    placeholder="Enter ditributor address"></textarea>
-
+                                     onBlur={this.validate}
+                                    placeholder="Enter ditributor address"></textarea>                      
+                                <span style={styles.validationError}> {this.state.validation.distributorAddress}</span>  
                             </div>
                              <div className="form-group">
-                                <button onClick={this.save}>Save</button>
+                                <button onClick={this.save} className="btn btn-success" disabled={this.ifFormValid()}>Save</button>
                             </div>
                         </div>
                     </div>
@@ -211,3 +287,15 @@ class CustomerSave extends Component {
 }
 
 export default CustomerSave;
+
+const styles={
+    validationError: {
+        color: 'red',
+        margin:'5px 0',
+        display: 'inline-block',
+    }
+}
+
+const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const NumberRegex = /^\d+$/;
+const DateRegex = /^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/;
