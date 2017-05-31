@@ -16,14 +16,14 @@ class CustomerSave extends Component {
 
         this.state = {
             customer: {
-                //"customerID": "",
+                "customerID": "",
                 "customerName": "",
                 "mobile": "",
-                //"landline": "",
+                "landline": "",
                 "customerEmail": "",
                 "dateOfBirth": moment(),
                 "customerAddress": "",
-                //"status": true,
+                "status": true,
                 "distributorName": "",
                 "distributorAddress": "",
                 "distributorContact": "",
@@ -117,10 +117,16 @@ class CustomerSave extends Component {
         });
     }
     ifFormValid(){
-        for (var key in this.state.customer) {
-              if(this.state.customer[key]===""){
+        if(this.state.customer.customerAddress===""||
+           this.state.customer.customerName===""||
+           this.state.customer.customerEmail===""||
+           this.state.customer.dateOfBirth===""||
+           this.state.customer.distributorAddress===""||
+           this.state.customer.distributorContact===""||
+           this.state.customer.distributorName===""||
+           this.state.customer.mobile===""
+            ){
                   return true
-              }
         }
         return false
     }
