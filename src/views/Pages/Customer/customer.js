@@ -8,7 +8,10 @@ import moment from 'moment';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import { api } from '../../../config';
 const pdfConverter = require('jspdf');
+var config = {
+  headers: {'Cache-Control': "no-cache, no-store, must-revalidate",'Content-Type': 'application/json'}
 
+};
 class Customer extends Component {
 
     constructor(props) {
@@ -108,7 +111,7 @@ class Customer extends Component {
     }
     handleInputChange(e) {
         var search = e.target.value;
-        axios.get(api + `/customers?searchQuery=` + search)
+        axios.get(api + `/customers?searchQuery=` + search,config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
@@ -125,7 +128,7 @@ class Customer extends Component {
 
     componentDidMount() {
         this.setState({loader:''});
-        axios.get(api + `/customers`)
+        axios.get(api + `/customers`,config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
@@ -139,10 +142,9 @@ class Customer extends Component {
     handlePageClick(data) {
          this.setState({loader:''});
         let pageNumber = data.selected + 1;
-        axios.get(api + `/customers?searchQuery=` + this.state.searchString + `&pageNumber=` + pageNumber + `&pageSize=` + this.state.pageSize)
+        axios.get(api + `/customers?searchQuery=` + this.state.searchString + `&pageNumber=` + pageNumber + `&pageSize=` + this.state.pageSize,config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
-                console.log(customers)
                 const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
                 this.setState({ pageCount: totalPageCount })
                 this.setState({ customers });
@@ -159,12 +161,12 @@ class Customer extends Component {
                     customer: {}
                 });
                 toast.success("Deleted Successfully");
-                axios.get(api + `/customers`)
+                 this.setState({loader:'none'});
+                axios.get(api + `/customers`,config)
                     .then(res => {
                         const customers = res.data.map(obj => obj)
-                        console.log(customers)
                         this.setState({ customers });
-                        this.setState({loader:'none'});
+                       
                     });
 
             }).catch(err => {
@@ -197,7 +199,7 @@ class Customer extends Component {
                         </td>
                         <td>{this.state.customers[key].mobile}</td>
                         <td>{this.state.customers[key].customerEmail}</td>
-                        <td>{moment(this.state.customers[key].dateOfBirth).format('d MMM, Y')} </td>
+                        <td>{moment(this.state.customers[key].dateOfBirth).format('D MMM, Y')} </td>
                         <td style={{ display: 'none' }}>{this.state.customers[key].customerAddress}</td>
                         <td>{this.state.customers[key].distributorName}</td>
                         <td>{this.state.customers[key].distributorContact}</td>
@@ -395,8 +397,8 @@ class Customer extends Component {
                                 <div id="loader-wrapper" style={{display:this.state.loader}}>
                                     <div id="loader"></div>
 
-                                    <div className="loader-section section-left"></div>
-                                    <div className="loader-section section-right"></div>
+                                    {/*<div className="loader-section section-left"></div>
+                                    <div className="loader-section section-right"></div>*/}
 
                                 </div>
                             </div>
