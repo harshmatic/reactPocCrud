@@ -97,6 +97,9 @@ class Sidebar extends Component {
                 </li>
               </ul>
             </li>
+            <li className="nav-item">
+                  <NavLink to={'/customer/list'} className="nav-link" activeClassName="active"><i className="icon-user"></i> Customer Page</NavLink>
+                </li>
           </ul>
         </nav>
       </div>

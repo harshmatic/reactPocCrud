@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
+import moment from 'moment';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 class Customer extends Component {
 
     constructor(props) {
@@ -43,27 +45,26 @@ class Customer extends Component {
     }
 
     delete(id, e) {
-        // axios.delete(`http://192.168.101.162:6058/api/employees/` + id)
-        //     .then(res => {
-        //         this.setState({
-        //         modal: !this.state.modal,
-        //         customer:{}
-        //     });
-        this.setState({
+        axios.delete(`http://192.168.101.162:6060/api/customers/` + id)
+            .then(res => {
+                this.setState({
                 modal: !this.state.modal,
                 customer:{}
             });
-                toast("Deleted Successfully") 
-                    
-                
-           // });
+            this.props.history.push('/customer/list');
+        toast("Deleted Successfully")
+
+
+        });
     }
 
 
 
     renderCustomers() {
-
+moment.locale('en');
+  
         return (
+            
             Object.keys(this.state.customers).map((key) => {
 
                 return (
@@ -78,15 +79,20 @@ class Customer extends Component {
                         </td>
                         <td>{this.state.customers[key].mobile}</td>
                         <td>{this.state.customers[key].customerEmail}</td>
-                        <td>{this.state.customers[key].dateOfBirth}</td>
-
+                        <td>{moment(this.state.customers[key].dateOfBirth).format('d MMM, Y')} </td>
+                        <td style={{ display: 'none' }}>{this.state.customers[key].customerAddress}</td>
                         <td>{this.state.customers[key].distributorName}</td>
                         <td>{this.state.customers[key].distributorContact}</td>
+                        <td style={{ display: 'none' }}>{this.state.customers[key].distributorAddress}</td>
                         {/* <td style={{visibility:'hidden'}}>{this.state.customers[key].customerAddress}</td>
                         <td style={{visibility:'hidden'}}>{this.state.customers[key].distributorAddress}</td>*/}
-                        
+
                         <td>
-                            <span className="badge badge-success">Active</span>
+                            {this.state.customers[key].status ?
+                                <span className="badge badge-success">Active</span>
+                                :
+                                <span className="badge badge-danger">In Active</span>
+                            }
                         </td>
                     </tr>
                 )
@@ -103,18 +109,32 @@ class Customer extends Component {
                             <div className="card-header">
                                 Customer Table
                             </div>
+
                             <div className="card-block">
-                                <table className="table table-bordered table-striped table-sm">
+                                <Link to={'/customer/add'} className="btn btn-primary" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link> {'  '}
+                                <ReactHTMLTableToExcel
+                                    id="test-table-xls-button"
+                                    className="btn btn-primary"
+                                    table="table-to-xls"
+                                    filename="CustomerDetails"
+                                    sheet="Customer"
+                                    buttonText="Download as XLS" />  {'   '}
+                                <button type="button" className="btn btn-primary"><i className="fa fa-file-pdf-o"></i> Download as Pdf</button>
+                                <br /><br />
+                                <table id="table-to-xls" className="table table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th>Consumer Name</th>
+                                            <th>Customer Name</th>
                                             <th>Contact Details</th>
                                             <th>Email id</th>
                                             <th>Date of Birth</th>
+                                            <th style={{ display: 'none' }}>Distributor Address</th>
                                             <th>Distributor Name</th>
                                             <th>Distributor Contact</th>
+
+                                            <th style={{ display: 'none' }}>Distributor Address</th>
                                             <th>Consumer Status</th>
-                                           {/*<th style={{visibility:'hidden'}}>Present Address</th>
+                                            {/*<th style={{visibility:'hidden'}}>Present Address</th>
                                             <th style={{visibility:'hidden'}}>Distributor Address</th>*/}
                                         </tr>
                                     </thead>
@@ -122,7 +142,7 @@ class Customer extends Component {
                                         {this.renderCustomers()}
                                     </tbody>
                                 </table>
-                                <div className="row">
+                                {/*<div className="row">
                                     <div className="col-lg-6">
                                         <nav>
                                             <ul className="pagination">
@@ -138,22 +158,26 @@ class Customer extends Component {
                                         </nav>
                                     </div>
                                     <div className="col-lg-6">
-                                        <Link to={'/customer/add'} className="btn btn-primary" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link>
+                                       
                                         <button type="button" className="btn btn-primary"><i className="fa fa-file-excel-o"></i> Export as Excel</button>
                                         <button type="button" className="btn btn-primary"><i className="fa fa-file-pdf-o"></i> Export as Pdf</button>
 
                                     </div>
 
-                                </div>
+                                </div>*/}
                                 <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this, '')} className={this.props.className}>
                                     <ModalHeader toggle={this.toggle}>Consumer Detail</ModalHeader>
                                     <ModalBody>
-                                        <div>Consumer Name : {this.state.customer.customerName}</div>
-                                       <div> Contact Details : {this.state.customer.customerName}</div>
-                                       <div>Email id : {this.state.customer.customerName}</div>
-                                       <div>Date of Birth : {this.state.customer.customerName}</div>
-                                       <div> Distributor Contact : {this.state.customer.customerName}</div>
-                                       <div> Consumer Status : {this.state.customer.customerName}</div>
+                                        <div><strong>Customer Name : </strong>{this.state.customer.customerName}</div>
+                                        <div> <strong>Mobile :</strong> {this.state.customer.mobile}</div>
+                                        <div> <strong>Landline :</strong> {this.state.customer.landline}</div>
+                                        <div><strong>Email id : </strong>{this.state.customer.customerEmail}</div>
+                                        <div><strong>Date of Birth :</strong> {moment(this.state.customer.dateOfBirth).format('d MMM, Y')}</div>
+                                        <div><strong>Customer Address :</strong> {this.state.customer.customerAddress}</div>
+                                        <div><strong>Distributor Name : </strong>{this.state.customer.customerName}</div>
+                                        <div> <strong>Distributor Contact :</strong> {this.state.customer.distributorContact}</div>
+                                        <div> <strong>Distributor Address :</strong> {this.state.customer.distributorAddress}</div>
+
 
                                     </ModalBody>
                                     <ModalFooter>

@@ -8579,7 +8579,7 @@ app-root {
 
 .header-fixed .app-header {
   position: fixed;
-  z-index: 0;
+  z-index: 1500;
   width: 100%; }
 .toastify {
     z-index: 99999 !important;

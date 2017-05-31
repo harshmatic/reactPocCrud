@@ -5,6 +5,9 @@ import moment from 'moment';
 import { BrowserRouter } from 'react-router-dom'
 import Validation from 'react-validation';
 import 'react-datepicker/dist/react-datepicker.css';
+import { toast } from 'react-toastify';
+import { createBrowserHistory } from 'history';
+export const history = createBrowserHistory();
 class CustomerSave extends Component {
     constructor(props) {
         super(props);
@@ -68,13 +71,17 @@ class CustomerSave extends Component {
             axios
                 .post(`http://192.168.101.162:6060/api/customers`,this.state.customer)
                 .then(res => {
-                    BrowserRouter.push('/#/customer/list')
+                    this.props.history.push('/customer/list');
+                    toast("Added Successfully")
+                    
                 });
         }else{
              axios
                 .put(`http://192.168.101.162:6060/api/customers/` + this.props.match.params.employeeID,this.state.customer)
                 .then(res => {
                     const customer = res.data
+                     this.props.history.push('/customer/list');
+                    toast("Updated Successfully")
                     this.setState({customer});
                 }); 
         }
