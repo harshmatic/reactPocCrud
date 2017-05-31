@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
@@ -16,12 +17,15 @@ class Customer extends Component {
             modal: false,
             modalDelete: false,
             customer: {},
+            pageCount: 0,
+            pageSize: 0
         };
         this.toggle = this.toggle.bind(this);
-         this.toggleDelete = this.toggleDelete.bind(this);
+        this.toggleDelete = this.toggleDelete.bind(this);
         this.delete = this.delete.bind(this);
         this.renderCustomers = this.renderCustomers.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handlePageClick = this.handlePageClick.bind(this);
     }
 
     toggle(key, e) {
@@ -38,7 +42,7 @@ class Customer extends Component {
         }
 
     }
-    toggleDelete(key,e) {
+    toggleDelete(key, e) {
         e.preventDefault();
         if (!this.state.modalDelete) {
             this.setState({ customer: this.state.customers[0] })
@@ -67,30 +71,44 @@ class Customer extends Component {
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 console.log(customers)
+                const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
+                const pageSize = JSON.parse(res.headers['x-pagination']).pageSize;
+                this.setState({ pageCount: totalPageCount });
+                this.setState({ pageSize: pageSize });
                 this.setState({ customers });
             });
     }
-
+    handlePageClick(data) {
+        let pageNumber = data.selected + 1;
+        axios.get(api + `/customers?pageNumber=` + pageNumber + `&pageSize=` + this.state.pageSize)
+            .then(res => {
+                const customers = res.data.map(obj => obj)
+                console.log(customers)
+                const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
+                this.setState({pageCount:totalPageCount})
+                this.setState({ customers });
+            });
+    };
     delete(id, e) {
         axios.delete(api + `/customers/` + id)
             .then(res => {
                 this.setState({
-                    modal: this.state.modal?!this.state.modal:false,
-                    modalDelete: this.state.modalDelete?!this.state.modalDelete:false,
+                    modal: this.state.modal ? !this.state.modal : false,
+                    modalDelete: this.state.modalDelete ? !this.state.modalDelete : false,
                     customer: {}
                 });
                 this.props.history.push('/customer/list');
                 toast.success("Deleted Successfully")
 
 
-            }).catch(err=> {
+            }).catch(err => {
                 this.setState({
-                    modal: this.state.modal?!this.state.modal:false,
-                    modalDelete: this.state.modalDelete?!this.state.modalDelete:false,
+                    modal: this.state.modal ? !this.state.modal : false,
+                    modalDelete: this.state.modalDelete ? !this.state.modalDelete : false,
                     customer: {}
                 });
                 toast.error("Something went wrong");
-                
+
             });
     }
 
@@ -120,7 +138,7 @@ class Customer extends Component {
                         <td>{this.state.customers[key].distributorName}</td>
                         <td>{this.state.customers[key].distributorContact}</td>
                         <td style={{ display: 'none' }}>{this.state.customers[key].distributorAddress}</td>
-                        
+
                         {/* <td style={{visibility:'hidden'}}>{this.state.customers[key].customerAddress}</td>
                         <td style={{visibility:'hidden'}}>{this.state.customers[key].distributorAddress}</td>*/}
 
@@ -134,11 +152,11 @@ class Customer extends Component {
                         <td>
                             <p data-placement="top" data-toggle="tooltip" title="Edit">
                                 <Link className="btn btn-primary btn-xs" to={'/customer/edit/' + this.state.customers[key].customerID}>
-                                {/*<button className="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" >*/}
+                                    {/*<button className="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" >*/}
                                     <span className="fa fa-pencil"></span></Link></p></td>
                         <td>
                             <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                <button className="btn btn-danger btn-xs" onClick={this.toggleDelete.bind(this,key)} >
+                                <button className="btn btn-danger btn-xs" onClick={this.toggleDelete.bind(this, key)} >
                                     <span className="fa fa-trash-o"></span></button></p>
                         </td>
                     </tr>
@@ -222,7 +240,20 @@ class Customer extends Component {
 
                                     </div>
 
-                                </div>*/}
+                                </div>*/
+                                    <div>
+                                        <ReactPaginate previousLabel={"previous"}
+                                            nextLabel={"next"}
+                                            breakLabel={<a href="">...</a>}
+                                            breakClassName={"break-me"}
+                                            pageCount={this.state.pageCount}
+                                            marginPagesDisplayed={2}
+                                            pageRangeDisplayed={5}
+                                            onPageChange={this.handlePageClick}
+                                            containerClassName={"pagination"}
+                                            subContainerClassName={"pages pagination"}
+                                            activeClassName={"active"} />
+                                    </div>}
                                 <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this, '')} className={this.props.className}>
                                     <ModalHeader toggle={this.toggle}>Consumer Detail</ModalHeader>
                                     <ModalBody>
@@ -243,15 +274,15 @@ class Customer extends Component {
                                         <Button color="secondary" onClick={this.delete.bind(this, this.state.customer.customerID)}>Delete</Button>
                                     </ModalFooter>
                                 </Modal>
-                                 <Modal isOpen={this.state.modalDelete} toggle={this.toggleDelete.bind(this)} className={this.props.className}>
+                                <Modal isOpen={this.state.modalDelete} toggle={this.toggleDelete.bind(this)} className={this.props.className}>
                                     <ModalHeader toggle={this.toggleDelete}>Delete</ModalHeader>
                                     <ModalBody>
-                                       Are You sure you want to delete this record.
+                                        Are You sure you want to delete this record.
                                     </ModalBody>
                                     <ModalFooter>
                                         <Button color="primary" onClick={this.delete.bind(this, this.state.customer.customerID)}>Yes</Button>
-                                       {' '}
-                                        <Button color="secondary" onClick={this.toggleDelete.bind(this,'')}>NO</Button>
+                                        {' '}
+                                        <Button color="secondary" onClick={this.toggleDelete.bind(this, '')}>NO</Button>
                                     </ModalFooter>
                                 </Modal>
                             </div>
