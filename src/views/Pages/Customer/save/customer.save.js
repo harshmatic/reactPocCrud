@@ -7,7 +7,9 @@ import Validation from 'react-validation';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
 import { createBrowserHistory } from 'history';
+import {api} from '../../../../config';
 export const history = createBrowserHistory();
+
 class CustomerSave extends Component {
     constructor(props) {
         super(props);
@@ -39,7 +41,7 @@ class CustomerSave extends Component {
     componentDidMount() {
         if (this.props.match.params.employeeID) {
             axios
-                .get(`http://192.168.101.162:6060/api/customers/` + this.props.match.params.employeeID)
+                .get(api+`/customers/` + this.props.match.params.employeeID)
                 .then(res => {
                     const customer = res.data
                     this.setState({customer});
@@ -69,7 +71,7 @@ class CustomerSave extends Component {
     save(){
         if(this.state.customer.customerID==""){
             axios
-                .post(`http://192.168.101.162:6060/api/customers`,this.state.customer)
+                .post(api+`/customers`,this.state.customer)
                 .then(res => {
                     this.props.history.push('/customer/list');
                     toast.success("Added Successfully")
@@ -77,7 +79,7 @@ class CustomerSave extends Component {
                 });
         }else{
              axios
-                .put(`http://192.168.101.162:6060/api/customers/` + this.props.match.params.employeeID,this.state.customer)
+                .put(api+`/customers/` + this.props.match.params.employeeID,this.state.customer)
                 .then(res => {
                     const customer = res.data
                      this.props.history.push('/customer/list');

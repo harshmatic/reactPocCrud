@@ -5,6 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
+import {api} from '../../../config';
 class Customer extends Component {
 
     constructor(props) {
@@ -36,7 +37,7 @@ class Customer extends Component {
 
     }
     handleInputChange(e) {
-         axios.get(`http://192.168.101.162:6060/api/customers?searchQuery=`+e.target.value)
+         axios.get(api+`/customers?searchQuery=`+e.target.value)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 console.log(customers)
@@ -46,7 +47,7 @@ class Customer extends Component {
     }
 
     componentDidMount() {
-        axios.get(`http://192.168.101.162:6060/api/customers`)
+        axios.get(api+`/customers`)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 console.log(customers)
@@ -55,7 +56,7 @@ class Customer extends Component {
     }
 
     delete(id, e) {
-        axios.delete(`http://192.168.101.162:6060/api/customers/` + id)
+        axios.delete(api+`/customers/` + id)
             .then(res => {
                 this.setState({
                     modal: !this.state.modal,
