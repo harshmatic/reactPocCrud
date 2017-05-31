@@ -16,14 +16,14 @@ class CustomerSave extends Component {
 
         this.state = {
             customer: {
-                "customerID": "",
+                //"customerID": "",
                 "customerName": "",
                 "mobile": "",
-                "landline": "",
+                //"landline": "",
                 "customerEmail": "",
                 "dateOfBirth": moment(),
                 "customerAddress": "",
-                "status": true,
+                //"status": true,
                 "distributorName": "",
                 "distributorAddress": "",
                 "distributorContact": "",
@@ -60,6 +60,8 @@ class CustomerSave extends Component {
                     const customer = res.data
                     this.setState({customer});
                 });
+        }else{
+            this.setState({disableSave:true})
         }
     }
      handleInputChange(event) {
@@ -115,8 +117,8 @@ class CustomerSave extends Component {
         });
     }
     ifFormValid(){
-        for (var key in this.state.validation) {
-              if(this.state.validation[key]!==""){
+        for (var key in this.state.customer) {
+              if(this.state.customer[key]===""){
                   return true
               }
         }
@@ -276,7 +278,7 @@ class CustomerSave extends Component {
                                 <span style={styles.validationError}> {this.state.validation.distributorAddress}</span>  
                             </div>
                              <div className="form-group">
-                                <button onClick={this.save} className="btn btn-success" disabled={this.ifFormValid()}>Save</button>
+                                <button onClick={this.save} className="btn btn-primary" disabled={this.ifFormValid()}>Save</button>
                             </div>
                         </div>
                     </div>
