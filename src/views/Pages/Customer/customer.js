@@ -51,6 +51,7 @@ class Customer extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePdf = this.handlePdf.bind(this);
         this.handleSort = this.handleSort.bind(this);
+        this.searchRequests = [];
     }
 
 
@@ -87,13 +88,13 @@ class Customer extends Component {
     handleSort(key, dir, e) {
         this.setState({ loader: '' });
         var elementArray = document.getElementsByClassName('ns');
-        var len=0;
-        while (elementArray.length>len) {
-                elementArray[len].className = 'ns';
-                ++len;
+        var len = 0;
+        while (elementArray.length > len) {
+            elementArray[len].className = 'ns';
+            ++len;
         }
-        document.getElementsByClassName('fa-long-arrow-up')[0]?document.getElementsByClassName('fa-long-arrow-up')[0].className='ns':true;
-        document.getElementsByClassName('fa-long-arrow-down')[0]?document.getElementsByClassName('fa-long-arrow-down')[0].className='ns':true;
+        document.getElementsByClassName('fa-long-arrow-up')[0] ? document.getElementsByClassName('fa-long-arrow-up')[0].className = 'ns' : true;
+        document.getElementsByClassName('fa-long-arrow-down')[0] ? document.getElementsByClassName('fa-long-arrow-down')[0].className = 'ns' : true;
         axios.get(api + `/customers?searchQuery=` + this.state.searchString + `&orderBy=` + key + ' ' + this.state.sortDir, config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
@@ -105,7 +106,7 @@ class Customer extends Component {
                 this.setState({ loader: 'none' });
             });
         this.setState({ sortDir: this.state.sortDir == 'asc' ? 'desc' : 'asc' });
-        e.target.children[0].className=this.state.sortDir=='asc'?'fa fa-long-arrow-up arrow':'fa fa-long-arrow-down arrow'
+        e.target.children[0].className = this.state.sortDir == 'asc' ? 'fa fa-long-arrow-up arrow' : 'fa fa-long-arrow-down arrow'
     }
 
     toggleDelete(key, e) {
@@ -183,20 +184,39 @@ class Customer extends Component {
         //axios.get(api + `/customers/ExportToExcel`,config)
 
     }
+    clearSearchRequests(){
+        this.searchRequests.forEach((timer) =>{
+            console.dir(timer)
+            clearTimeout(timer);
+        });
+
+    }
     handleInputChange(e) {
         var search = e.target.value;
-        axios.get(api + `/customers?searchQuery=` + search, config)
-            .then(res => {
-                const customers = res.data.map(obj => obj)
-                const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
-                const pageSize = JSON.parse(res.headers['x-pagination']).pageSize;
+        this.clearSearchRequests();
+        this.searchRequests.push(setTimeout(() => {
+                axios.get(api + `/customers?searchQuery=` + search, config)
+                .then(res => {
+                    const customers = res.data.map(obj => obj)
+                    const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
+                    const pageSize = JSON.parse(res.headers['x-pagination']).pageSize;
+                    this.setState({
+                        pageCount: totalPageCount,
+                        pageSize: pageSize,
+                        customers: customers,
+                        searchString: search,
+                        loader:'none'
+                    });
+                }).catch(err => {
                 this.setState({
-                    pageCount: totalPageCount,
-                    pageSize: pageSize,
-                    customers: customers,
-                    searchString: search
+                    customer: {},
+                    loader: 'none'
                 });
+                toast.error("Something went wrong");
+
             });
+        },500)
+        );
 
     }
 
@@ -212,6 +232,13 @@ class Customer extends Component {
                 this.setState({ customers });
                 this.setState({ totalCount: totalPageCount * 10 });
                 this.setState({ loader: 'none' });
+            }).catch(err => {
+                this.setState({
+                    customer: {},
+                    loader: 'none'
+                });
+                toast.error("Something went wrong");
+
             });
     }
     handlePageClick(data) {
@@ -225,6 +252,13 @@ class Customer extends Component {
                 this.setState({ customers });
                 this.setState({ currentPageNumber: pageNumber });
                 this.setState({ loader: 'none' });
+            }).catch(err => {
+                this.setState({
+                    customer: {},
+                    loader: 'none'
+                });
+                toast.error("Something went wrong");
+
             });
     };
     delete(id, e) {
@@ -268,7 +302,7 @@ class Customer extends Component {
 
                 return (
                     <tr key={key}>
-                        <td style={{backgroundColor:this.state.customers[key].status ?'#4dbd74':'#f86c6b'}}> </td>
+                        <td style={{ backgroundColor: this.state.customers[key].status ? '#4dbd74' : '#f86c6b' }}> </td>
                         <td>
                             <a href="" onClick={this.toggle.bind(this, key)}>
                                 {this.state.customers[key].customerName}
@@ -358,6 +392,7 @@ class Customer extends Component {
                                     </div>
                                     <div className="col-lg-4 search-custom">
                                         <input
+                                            id="search"
                                             type="text"
                                             onKeyUp={this.handleInputChange.bind(this)}
                                             placeholder=" Search"
@@ -370,12 +405,12 @@ class Customer extends Component {
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns"/></th>
-                                            <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns"/></th>
-                                            <th onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns"/></th>
-                                            <th onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns"/></th>
-                                            <th onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns"/></th>
-                                            <th onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns"/></th>
+                                            <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
                                             {/*<th onClick={this.handleSort.bind(this, 'status', 'asc')}>Consumer Status<i className="fa fa-arrows-v arrow ns"/></th>*/}
                                             <th>Edit</th>
                                             <th>Delete</th>
