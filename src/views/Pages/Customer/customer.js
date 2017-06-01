@@ -84,9 +84,15 @@ class Customer extends Component {
 
     }
     handleSort(key, dir, e) {
-        console.log(key, dir)
         this.setState({ loader: '' });
-
+        var elementArray = document.getElementsByClassName('ns');
+        var len=0;
+        while (elementArray.length>len) {
+                elementArray[len].className = 'ns';
+                ++len;
+        }
+        document.getElementsByClassName('fa-long-arrow-up')[0]?document.getElementsByClassName('fa-long-arrow-up')[0].className='ns':true;
+        document.getElementsByClassName('fa-long-arrow-down')[0]?document.getElementsByClassName('fa-long-arrow-down')[0].className='ns':true;
         axios.get(api + `/customers?searchQuery=` + this.state.searchString + `&orderBy=` + key + ' ' + this.state.sortDir, config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
@@ -98,7 +104,9 @@ class Customer extends Component {
                 this.setState({ loader: 'none' });
             });
         this.setState({ sortDir: this.state.sortDir == 'asc' ? 'desc' : 'asc' });
+        e.target.children[0].className=this.state.sortDir=='asc'?'fa fa-long-arrow-up arrow':'fa fa-long-arrow-down arrow'
     }
+
     toggleDelete(key, e) {
         e.preventDefault();
         if (!this.state.modalDelete) {
@@ -259,6 +267,7 @@ class Customer extends Component {
 
                 return (
                     <tr key={key}>
+                        <td style={{backgroundColor:this.state.customers[key].status ?'#4dbd74':'#f86c6b'}}> </td>
                         <td>
                             <a href="" onClick={this.toggle.bind(this, key)}>
                                 {this.state.customers[key].customerName}
@@ -275,13 +284,13 @@ class Customer extends Component {
                         {/* <td style={{visibility:'hidden'}}>{this.state.customers[key].customerAddress}</td>
                         <td style={{visibility:'hidden'}}>{this.state.customers[key].distributorAddress}</td>*/}
 
-                        <td>
+                        {/*<td>
                             {this.state.customers[key].status ?
                                 <span className="badge badge-success">Active</span>
                                 :
                                 <span className="badge badge-danger">In Active</span>
                             }
-                        </td>
+                        </td>*/}
                         <td>
                             <p data-placement="top" data-toggle="tooltip" title="Edit">
                                 <Link className="btn btn-primary btn-xs" to={'/customer/edit/' + this.state.customers[key].customerID}>
@@ -302,7 +311,7 @@ class Customer extends Component {
         if (window.innerWidth > 580) {
             paginate = <ReactPaginate previousLabel={"previous"}
                 nextLabel={"next"}
-                breakLabel={<a href="">...</a>}
+                breakLabel={<a>...</a>}
                 breakClassName={"break-me"}
                 pageCount={this.state.pageCount}
                 marginPagesDisplayed={2}
@@ -314,7 +323,7 @@ class Customer extends Component {
         } else {
             paginate = <ReactPaginate previousLabel={"<<"}
                 nextLabel={">>"}
-                breakLabel={<a href="">...</a>}
+                breakLabel={<a >...</a>}
                 breakClassName={"break-me"}
                 pageCount={this.state.pageCount}
                 marginPagesDisplayed={2}
@@ -356,13 +365,14 @@ class Customer extends Component {
                                 <Table responsive id="table-to-xls" className="table table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name</th>
-                                            <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details</th>
-                                            <th onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id</th>
-                                            <th onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth</th>
-                                            <th onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name</th>
-                                            <th onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact</th>
-                                            <th onClick={this.handleSort.bind(this, 'status', 'asc')}>Consumer Status</th>
+                                            <th></th>
+                                            <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns"/></th>
+                                            <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns"/></th>
+                                            <th onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns"/></th>
+                                            <th onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns"/></th>
+                                            <th onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns"/></th>
+                                            <th onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns"/></th>
+                                            {/*<th onClick={this.handleSort.bind(this, 'status', 'asc')}>Consumer Status<i className="fa fa-arrows-v arrow ns"/></th>*/}
                                             <th>Edit</th>
                                             <th>Delete</th>
                                         </tr>
@@ -381,17 +391,44 @@ class Customer extends Component {
 
                                 <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this, '')} className="my-modal">
 
-                                    <ModalHeader toggle={this.toggle.bind(this,'')}>Consumer Detail</ModalHeader>
+                                    <ModalHeader toggle={this.toggle.bind(this, '')}>Consumer Detail</ModalHeader>
                                     <ModalBody>
-                                        <div><strong>Customer Name : </strong>{this.state.customer.customerName}</div>
-                                        <div> <strong>Mobile :</strong> {this.state.customer.mobile}</div>
-                                        <div> <strong>Landline :</strong> {this.state.customer.landline}</div>
-                                        <div><strong>Email id : </strong>{this.state.customer.customerEmail}</div>
-                                        <div><strong>Date of Birth :</strong> {moment(this.state.customer.dateOfBirth).format('d MMM, Y')}</div>
-                                        <div><strong>Customer Address :</strong> {this.state.customer.customerAddress}</div>
-                                        <div><strong>Distributor Name : </strong>{this.state.customer.customerName}</div>
-                                        <div> <strong>Distributor Contact :</strong> {this.state.customer.distributorContact}</div>
-                                        <div> <strong>Distributor Address :</strong> {this.state.customer.distributorAddress}</div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Customer Name : </strong></div>
+                                            <div className="col-lg-7">{this.state.customer.customerName}</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Mobile :</strong></div>
+                                            <div className="col-lg-7">{this.state.customer.mobile}</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Landline :</strong></div>
+                                            <div className="col-lg-7">{this.state.customer.landline}</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Email id : </strong></div>
+                                            <div className="col-lg-7">{this.state.customer.customerEmail}</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Date of Birth :</strong></div>
+                                            <div className="col-lg-7">{moment(this.state.customer.dateOfBirth).format('d MMM, Y')}</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Customer Address :</strong></div>
+                                            <div className="col-lg-7">{this.state.customer.customerAddress}</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Distributor Name : </strong></div>
+                                            <div className="col-lg-7">{this.state.customer.customerName}</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Distributor Contact :</strong></div>
+                                            <div className="col-lg-7">{this.state.customer.distributorContact}</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-lg-5"><strong>Distributor Address :</strong></div>
+                                            <div className="col-lg-7">{this.state.customer.distributorAddress}</div>
+                                        </div>
 
 
                                     </ModalBody>
@@ -402,8 +439,8 @@ class Customer extends Component {
                                 </Modal>
 
 
-                                <Modal isOpen={this.state.modalDelete} toggle={this.toggleDelete.bind(this,'')} className="my-modal">
-                                    <ModalHeader toggle={this.toggleDelete.bind(this,'')}>Delete</ModalHeader>
+                                <Modal isOpen={this.state.modalDelete} toggle={this.toggleDelete.bind(this, '')} className="my-modal">
+                                    <ModalHeader toggle={this.toggleDelete.bind(this, '')}>Delete</ModalHeader>
                                     <ModalBody>
                                         Are You sure you want to delete this record.
                                     </ModalBody>
@@ -459,3 +496,4 @@ class Customer extends Component {
 }
 
 export default Customer;
+// 

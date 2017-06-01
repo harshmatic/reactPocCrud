@@ -11,7 +11,14 @@ html {
   line-height: 1.15;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%; }
-
+th {
+  cursor:pointer;
+}
+.arrow {
+  float: right;
+  padding-top: 3px;
+  color:cadetblue;
+}
 body {
   margin: 0; }
 

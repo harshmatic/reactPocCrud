@@ -33,9 +33,13 @@ class Full extends Component {
             <div className="container-fluid">
               <Switch>
                 <Route path="/dashboard" name="Dashboard" component={Dashboard} />
-                <Route path="/customer/list" name="Customer Page" component={Customer} />
-                <Route exact path="/customer/add" name="Customer Add" component={CustomerSave} />
-                <Route path="/customer/edit/:employeeID" name="Customer Edit" component={CustomerSave} />
+                
+                
+                    <Route path="/customer/list" name="Customer Page" component={Customer} />
+                    <Route path="/customer/add" name="Customer Add" component={CustomerSave} />
+                    <Route path="/customer/edit/:employeeID" name="Customer Edit" component={CustomerSave} />
+                 
+                
                 <Route path="/components/buttons" name="Buttons" component={Buttons} />
                 <Route path="/components/cards" name="Cards" component={Cards} />
                 <Route path="/components/forms" name="Forms" component={Forms} />
@@ -48,7 +52,9 @@ class Full extends Component {
                 <Route path="/icons/simple-line-icons" name="Simple Line Icons" component={SimpleLineIcons} />
                 <Route path="/widgets" name="Widgets" component={Widgets} />
                 <Route path="/charts" name="Charts" component={Charts} />
+                <Redirect from="/customer" to="/customer/list" />
                 <Redirect from="/" to="/dashboard" />
+                 
               </Switch>
             </div>
           </main>
