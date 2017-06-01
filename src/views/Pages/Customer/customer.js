@@ -114,13 +114,13 @@ class Customer extends Component {
 
     }
 
-    toggleExport(key, e) {
+    toggleExport(e) {
         e.preventDefault();
         this.setState({
             modalExport: !this.state.modalExport
         });
     }
-    toggleExportPdf(key, e) {
+    toggleExportPdf(e) {
         e.preventDefault();
         this.setState({
             modalExportPdf: !this.state.modalExportPdf
@@ -338,10 +338,10 @@ class Customer extends Component {
                                 <div className="row">
                                     <div className="col-lg-8 button-custom">
                                         <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link> {'  '}
-                                        <button onClick={this.toggleExport} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Excel</button>{'   '}
+                                        <button onClick={this.toggleExport.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Excel</button>{'   '}
 
 
-                                        <button onClick={this.toggleExportPdf} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Pdf</button>
+                                        <button onClick={this.toggleExportPdf.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Pdf</button>
                                     </div>
                                     <div className="col-lg-4 search-custom">
                                         <input
@@ -381,7 +381,7 @@ class Customer extends Component {
 
                                 <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this, '')} className="my-modal">
 
-                                    <ModalHeader toggle={this.toggle}>Consumer Detail</ModalHeader>
+                                    <ModalHeader toggle={this.toggle.bind(this,'')}>Consumer Detail</ModalHeader>
                                     <ModalBody>
                                         <div><strong>Customer Name : </strong>{this.state.customer.customerName}</div>
                                         <div> <strong>Mobile :</strong> {this.state.customer.mobile}</div>
@@ -402,8 +402,8 @@ class Customer extends Component {
                                 </Modal>
 
 
-                                <Modal isOpen={this.state.modalDelete} toggle={this.toggleDelete.bind(this)} className="my-modal">
-                                    <ModalHeader toggle={this.toggleDelete}>Delete</ModalHeader>
+                                <Modal isOpen={this.state.modalDelete} toggle={this.toggleDelete.bind(this,'')} className="my-modal">
+                                    <ModalHeader toggle={this.toggleDelete.bind(this,'')}>Delete</ModalHeader>
                                     <ModalBody>
                                         Are You sure you want to delete this record.
                                     </ModalBody>
@@ -415,7 +415,7 @@ class Customer extends Component {
                                     </ModalFooter>
                                 </Modal>
                                 <Modal isOpen={this.state.modalExport} toggle={this.toggleExport.bind(this)} className="my-modal">
-                                    <ModalHeader toggle={this.toggleExport}>Export as Excel File.</ModalHeader>
+                                    <ModalHeader toggle={this.toggleExport.bind(this)}>Export as Excel File.</ModalHeader>
                                     <ModalBody>
                                         How many records do you want to export ?
                                     </ModalBody>
@@ -428,7 +428,7 @@ class Customer extends Component {
                                     </ModalFooter>
                                 </Modal>
                                 <Modal isOpen={this.state.modalExportPdf} toggle={this.toggleExportPdf.bind(this)} className="my-modal">
-                                    <ModalHeader toggle={this.toggleExportPdf}>Export as PDF File.</ModalHeader>
+                                    <ModalHeader toggle={this.toggleExportPdf.bind(this)}>Export as PDF File.</ModalHeader>
                                     <ModalBody>
                                         How many records do you want to export ?
                                     </ModalBody>
