@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'reactstrap';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { createBrowserHistory } from 'history';
@@ -11,7 +11,7 @@ import { api } from '../../../config';
 const pdfConverter = require('jspdf');
 export const history = createBrowserHistory();
 var config = {
-  headers: {'Cache-Control': "no-cache, no-store, must-revalidate",'Content-Type': 'application/json'}
+    headers: { 'Cache-Control': "no-cache, no-store, must-revalidate", 'Content-Type': 'application/json' }
 
 };
 class Customer extends Component {
@@ -28,9 +28,12 @@ class Customer extends Component {
             customer: {},
             pageCount: 0,
             pageSize: 0,
+            totalCount: 0,
+            currentPageNumber: 1,
             searchString: '',
-            loader:'none',
-            sort:{col:'',dir:''}
+            loader: 'none',
+            sortDir: 'asc',
+            sort: { col: '', dir: '' }
         };
         this.toggle = this.toggle.bind(this);
         this.toggleDelete = this.toggleDelete.bind(this);
@@ -46,7 +49,7 @@ class Customer extends Component {
         this.renderCustomers = this.renderCustomers.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePdf = this.handlePdf.bind(this);
-         this.handleSort = this.handleSort.bind(this);
+        this.handleSort = this.handleSort.bind(this);
     }
 
 
@@ -80,9 +83,11 @@ class Customer extends Component {
         }
 
     }
-    handleSort(key,e) {
-        this.setState({loader:''});
-        axios.get(api + `/customers?searchQuery=`+this.state.searchString+`&orderBy=`+key,config)
+    handleSort(key, dir, e) {
+        console.log(key, dir)
+        this.setState({ loader: '' });
+
+        axios.get(api + `/customers?searchQuery=` + this.state.searchString + `&orderBy=` + key + ' ' + this.state.sortDir, config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
@@ -90,8 +95,9 @@ class Customer extends Component {
                 this.setState({ pageCount: totalPageCount });
                 this.setState({ pageSize: pageSize });
                 this.setState({ customers });
-                 this.setState({loader:'none'});
+                this.setState({ loader: 'none' });
             });
+        this.setState({ sortDir: this.state.sortDir == 'asc' ? 'desc' : 'asc' });
     }
     toggleDelete(key, e) {
         e.preventDefault();
@@ -120,24 +126,57 @@ class Customer extends Component {
             modalExportPdf: !this.state.modalExportPdf
         });
     }
-    exportPdf(e) {
-         window.location=api+'/customers/ExportToPdf';
+    exportPdf(type, e) {
+        var url = '';
+
+        switch (type) {
+            case 'a':
+                url = '?pageSize=' + this.state.totalCount
+                break;
+            case 'v':
+                url = '?searchQuery=' + this.state.searchString + '&pageSize=' + this.state.pageSize + '&pageNumber=' + this.state.currentPageNumber
+                break;
+            case 'f':
+                url = '?searchQuery=' + this.state.searchString + '&pageSize=' + this.state.totalCount
+                break;
+            default:
+                url = '?searchQuery=' + this.state.searchString + '&pageSize=' + this.state.pageSize + '&pageNumber=' + this.state.currentPageNumber
+        }
         this.setState({
             modalExportPdf: !this.state.modalExportPdf
         });
+        window.open(api + '/customers/ExportToPdf' + url, '_blank');
+
     }
-    export(e) {
-        window.location=api+'/customers/ExportToExcel';
+    export(type, e) {
+        var url = '';
+
+        switch (type) {
+            case 'a':
+                url = '?pageSize=' + this.state.totalCount
+                break;
+            case 'v':
+                url = '?searchQuery=' + this.state.searchString + '&pageSize=' + this.state.pageSize + '&pageNumber=' + this.state.currentPageNumber
+                break;
+            case 'f':
+                url = '?searchQuery=' + this.state.searchString + '&pageSize=' + this.state.totalCount
+                break;
+            default:
+                url = '?searchQuery=' + this.state.searchString + '&pageSize=' + this.state.pageSize + '&pageNumber=' + this.state.currentPageNumber
+        }
+
         this.setState({
             modalExport: !this.state.modalExport
         });
+        window.open(api + '/customers/ExportToExcel' + url, '_blank');
+
         //this.props.history.push('/customers/ExportToExcel');
         //axios.get(api + `/customers/ExportToExcel`,config)
-            
+
     }
     handleInputChange(e) {
         var search = e.target.value;
-        axios.get(api + `/customers?searchQuery=` + search,config)
+        axios.get(api + `/customers?searchQuery=` + search, config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
@@ -153,8 +192,8 @@ class Customer extends Component {
     }
 
     componentDidMount() {
-        this.setState({loader:''});
-        axios.get(api + `/customers`,config)
+        this.setState({ loader: '' });
+        axios.get(api + `/customers`, config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
@@ -162,23 +201,25 @@ class Customer extends Component {
                 this.setState({ pageCount: totalPageCount });
                 this.setState({ pageSize: pageSize });
                 this.setState({ customers });
-                 this.setState({loader:'none'});
+                this.setState({ totalCount: totalPageCount * 10 });
+                this.setState({ loader: 'none' });
             });
     }
     handlePageClick(data) {
-         this.setState({loader:''});
+        this.setState({ loader: '' });
         let pageNumber = data.selected + 1;
-        axios.get(api + `/customers?searchQuery=` + this.state.searchString + `&pageNumber=` + pageNumber + `&pageSize=` + this.state.pageSize,config)
+        axios.get(api + `/customers?searchQuery=` + this.state.searchString + `&pageNumber=` + pageNumber + `&pageSize=` + this.state.pageSize, config)
             .then(res => {
                 const customers = res.data.map(obj => obj)
                 const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
                 this.setState({ pageCount: totalPageCount })
                 this.setState({ customers });
-                this.setState({loader:'none'});
+                this.setState({ currentPageNumber: pageNumber });
+                this.setState({ loader: 'none' });
             });
     };
     delete(id, e) {
-        this.setState({loader:''});
+        this.setState({ loader: '' });
         axios.delete(api + `/customers/` + id)
             .then(res => {
                 this.setState({
@@ -187,12 +228,12 @@ class Customer extends Component {
                     customer: {}
                 });
                 toast.success("Deleted Successfully");
-                 this.setState({loader:'none'});
-                axios.get(api + `/customers`,config)
+                this.setState({ loader: 'none' });
+                axios.get(api + `/customers`, config)
                     .then(res => {
                         const customers = res.data.map(obj => obj)
                         this.setState({ customers });
-                       
+
                     });
 
             }).catch(err => {
@@ -200,7 +241,7 @@ class Customer extends Component {
                     modal: this.state.modal ? !this.state.modal : false,
                     modalDelete: this.state.modalDelete ? !this.state.modalDelete : false,
                     customer: {},
-                    loader:'none'
+                    loader: 'none'
                 });
                 toast.error("Something went wrong");
 
@@ -257,7 +298,33 @@ class Customer extends Component {
         )
     }
     render() {
+        let paginate;
+        if (window.innerWidth > 580) {
+            paginate = <ReactPaginate previousLabel={"previous"}
+                nextLabel={"next"}
+                breakLabel={<a href="">...</a>}
+                breakClassName={"break-me"}
+                pageCount={this.state.pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={this.handlePageClick}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"} />
+        } else {
+            paginate = <ReactPaginate previousLabel={"<<"}
+                nextLabel={">>"}
+                breakLabel={<a href="">...</a>}
+                breakClassName={"break-me"}
+                pageCount={this.state.pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={2}
+                onPageChange={this.handlePageClick}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"} />
 
+        }
         return (
             <div className="animated fadeIn">
                 <div className="row">
@@ -271,67 +338,44 @@ class Customer extends Component {
                                 <div className="row">
                                     <div className="col-lg-8 button-custom">
                                         <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link> {'  '}
-
-                                        {/*<ReactHTMLTableToExcel
-                                    id="test-table-xls-button"
-                                    className="btn btn-primary"
-                                    table="table-to-xls"
-                                    filename="CustomerDetails"
-                                    sheet="Customer"
-                                    buttonText="Download as XLS" />  {'   '}*/}
-
                                         <button onClick={this.toggleExport} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Excel</button>{'   '}
 
 
                                         <button onClick={this.toggleExportPdf} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Pdf</button>
                                     </div>
-                                    {/*<span >
-                                        <button type="button" className="btn btn-primary"><i className="fa fa-search"></i></button>*/}
                                     <div className="col-lg-4 search-custom">
                                         <input
                                             type="text"
                                             onKeyUp={this.handleInputChange.bind(this)}
                                             placeholder=" Search"
                                             style={{ float: 'right', height: '35px' }} />
-                                        {/*/></span>*/}
+
                                     </div>
                                     <br /><br />
                                 </div>
-                                <table id="table-to-xls" className="table table-bordered table-striped table-sm">
+                                <Table responsive id="table-to-xls" className="table table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th onClick={this.handleSort.bind(this,'customerName')}>Customer Name</th>
-                                            <th onClick={this.handleSort.bind(this,'mobile')}>Contact Details</th>
-                                            <th onClick={this.handleSort.bind(this,'customerEmail')}>Email id</th>
-                                            <th>Date of Birth</th>
-                                            <th style={{ display: 'none' }}>Distributor Address</th>
-                                            <th>Distributor Name</th>
-                                            <th>Distributor Contact</th>
-
-                                            <th style={{ display: 'none' }}>Distributor Address</th>
-                                            <th>Consumer Status</th>
+                                            <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name</th>
+                                            <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details</th>
+                                            <th onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id</th>
+                                            <th onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth</th>
+                                            <th onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name</th>
+                                            <th onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact</th>
+                                            <th onClick={this.handleSort.bind(this, 'status', 'asc')}>Consumer Status</th>
                                             <th>Edit</th>
                                             <th>Delete</th>
-                                            {/*<th style={{visibility:'hidden'}}>Present Address</th>
-                                            <th style={{visibility:'hidden'}}>Distributor Address</th>*/}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {this.renderCustomers()}
                                     </tbody>
-                                </table>
-                                <div>
-                                    <ReactPaginate previousLabel={"previous"}
-                                        nextLabel={"next"}
-                                        breakLabel={<a href="">...</a>}
-                                        breakClassName={"break-me"}
-                                        pageCount={this.state.pageCount}
-                                        marginPagesDisplayed={2}
-                                        pageRangeDisplayed={5}
-                                        onPageChange={this.handlePageClick}
-                                        containerClassName={"pagination"}
-                                        subContainerClassName={"pages pagination"}
-                                        activeClassName={"active"} />
+                                </Table>
+
+                                <div style={{ paddingTop: '20px' }}>
+                                    {/*<div className="col-lg-12">*/}
+                                    {paginate}
+                                    {/*</div>*/}
                                 </div>
 
 
@@ -376,11 +420,11 @@ class Customer extends Component {
                                         How many records do you want to export ?
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Button color="primary" onClick={this.export.bind(this)}>All Results</Button>
+                                        <Button color="primary" onClick={this.export.bind(this, 'a')}>All Results</Button>
                                         {' '}
-                                        <Button color="primary" onClick={this.export.bind(this)}>Visible Results</Button>
+                                        <Button color="primary" onClick={this.export.bind(this, 'v')}>Visible Results</Button>
                                         {' '}
-                                        <Button color="primary" onClick={this.export.bind(this)}>Filtered Results</Button>
+                                        <Button color="primary" onClick={this.export.bind(this, 'f')}>Filtered Results</Button>
                                     </ModalFooter>
                                 </Modal>
                                 <Modal isOpen={this.state.modalExportPdf} toggle={this.toggleExportPdf.bind(this)} className="my-modal">
@@ -389,15 +433,15 @@ class Customer extends Component {
                                         How many records do you want to export ?
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Button color="primary" onClick={this.exportPdf.bind(this)}>All Results</Button>
+                                        <Button color="primary" onClick={this.exportPdf.bind(this, 'a')}>All Results</Button>
                                         {' '}
-                                        <Button color="primary" onClick={this.exportPdf.bind(this)}>Visible Results</Button>
+                                        <Button color="primary" onClick={this.exportPdf.bind(this, 'v')}>Visible Results</Button>
                                         {' '}
-                                        <Button color="primary" onClick={this.exportPdf.bind(this)}>Filtered Results</Button>
+                                        <Button color="primary" onClick={this.exportPdf.bind(this, 'f')}>Filtered Results</Button>
 
                                     </ModalFooter>
                                 </Modal>
-                                <div id="loader-wrapper" style={{display:this.state.loader}}>
+                                <div id="loader-wrapper" style={{ display: this.state.loader }}>
                                     <div id="loader"></div>
 
                                     {/*<div className="loader-section section-left"></div>
