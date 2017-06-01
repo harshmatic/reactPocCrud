@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import moment from 'moment';
 import { createBrowserHistory } from 'history';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
+import CheckAuthoriztion from './checkAuthoriztion';
 import { api } from '../../../config';
 const pdfConverter = require('jspdf');
 export const history = createBrowserHistory();
@@ -346,7 +347,10 @@ class Customer extends Component {
                             <div className="card-block">
                                 <div className="row">
                                     <div className="col-lg-8 button-custom">
-                                        <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link> {'  '}
+                                        <CheckAuthoriztion permissions={[]}>
+                                            <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link> {'  '}
+                                        </CheckAuthoriztion>
+                                        
                                         <button onClick={this.toggleExport.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Excel</button>{'   '}
 
 

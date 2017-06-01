@@ -20,8 +20,10 @@ import Tables from '../../views/Components/Tables/'
 import Tabs from '../../views/Components/Tabs/'
 import FontAwesome from '../../views/Icons/FontAwesome/'
 import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/'
+import NotAuthorize from '../../views/Pages/NotAuthorize/NotAuthorize'
 
 class Full extends Component {
+  
   render() {
     return (
       <div className="app">
@@ -33,13 +35,10 @@ class Full extends Component {
             <div className="container-fluid">
               <Switch>
                 <Route path="/dashboard" name="Dashboard" component={Dashboard} />
-                
-                
-                    <Route path="/customer/list" name="Customer Page" component={Customer} />
-                    <Route path="/customer/add" name="Customer Add" component={CustomerSave} />
-                    <Route path="/customer/edit/:employeeID" name="Customer Edit" component={CustomerSave} />
-                 
-                
+                <Route path="/not-authorize" name="NotAuthorize" component={NotAuthorize} />
+                <Route path="/customer/list"  onEnter={requireAuth(['a','b','c'])} name="Customer Page" component={Customer} />
+                <Route path="/customer/add" name="Customer Add" component={CustomerSave} />
+                <Route path="/customer/edit/:employeeID" name="Customer Edit" component={CustomerSave} />
                 <Route path="/components/buttons" name="Buttons" component={Buttons} />
                 <Route path="/components/cards" name="Cards" component={Cards} />
                 <Route path="/components/forms" name="Forms" component={Forms} />
@@ -67,3 +66,7 @@ class Full extends Component {
 }
 
 export default Full;
+function requireAuth(permission){
+ //var userPermissions=JSON.parse(localStorage.getItem("loggedInUserPermission"))
+ //window.location.href='/#/not-authorize'
+}
