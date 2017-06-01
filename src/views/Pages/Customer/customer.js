@@ -184,9 +184,8 @@ class Customer extends Component {
         //axios.get(api + `/customers/ExportToExcel`,config)
 
     }
-    clearSearchRequests(){
-        this.searchRequests.forEach((timer) =>{
-            console.dir(timer)
+    clearSearchRequests() {
+        this.searchRequests.forEach((timer) => {
             clearTimeout(timer);
         });
 
@@ -195,7 +194,7 @@ class Customer extends Component {
         var search = e.target.value;
         this.clearSearchRequests();
         this.searchRequests.push(setTimeout(() => {
-                axios.get(api + `/customers?searchQuery=` + search, config)
+            axios.get(api + `/customers?searchQuery=` + search, config)
                 .then(res => {
                     const customers = res.data.map(obj => obj)
                     const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
@@ -205,22 +204,23 @@ class Customer extends Component {
                         pageSize: pageSize,
                         customers: customers,
                         searchString: search,
-                        loader:'none'
+                        loader: 'none'
                     });
                 }).catch(err => {
-                this.setState({
-                    customer: {},
-                    loader: 'none'
-                });
-                toast.error("Something went wrong");
+                    this.setState({
+                        customer: {},
+                        loader: 'none'
+                    });
+                    toast.error("Something went wrong");
 
-            });
-        },500)
+                });
+        }, 500)
         );
 
     }
 
     componentDidMount() {
+        console.log(process.env.NODE_ENV);
         this.setState({ loader: '' });
         axios.get(api + `/customers`, config)
             .then(res => {
@@ -295,51 +295,63 @@ class Customer extends Component {
 
     renderCustomers() {
         moment.locale('en');
+        console.log(this.state.customers)
+        if (this.state.customers.length>0) {
+            return (
+                Object.keys(this.state.customers).map((key) => {
 
-        return (
+                    return (
 
-            Object.keys(this.state.customers).map((key) => {
+                        <tr key={key}>
+                            <td style={{ backgroundColor: this.state.customers[key].status ? '#4dbd74' : '#f86c6b' }}> </td>
+                            <td>
+                                <a href="" onClick={this.toggle.bind(this, key)}>
+                                    {this.state.customers[key].customerName}
+                                </a>
+                            </td>
+                            <td>{this.state.customers[key].mobile}</td>
+                            <td>{this.state.customers[key].customerEmail}</td>
+                            <td>{moment(this.state.customers[key].dateOfBirth).format('D MMM, Y')} </td>
+                            <td style={{ display: 'none' }}>{this.state.customers[key].customerAddress}</td>
+                            <td>{this.state.customers[key].distributorName}</td>
+                            <td>{this.state.customers[key].distributorContact}</td>
+                            <td style={{ display: 'none' }}>{this.state.customers[key].distributorAddress}</td>
 
-                return (
-                    <tr key={key}>
-                        <td style={{ backgroundColor: this.state.customers[key].status ? '#4dbd74' : '#f86c6b' }}> </td>
-                        <td>
-                            <a href="" onClick={this.toggle.bind(this, key)}>
-                                {this.state.customers[key].customerName}
-                            </a>
-                        </td>
-                        <td>{this.state.customers[key].mobile}</td>
-                        <td>{this.state.customers[key].customerEmail}</td>
-                        <td>{moment(this.state.customers[key].dateOfBirth).format('D MMM, Y')} </td>
-                        <td style={{ display: 'none' }}>{this.state.customers[key].customerAddress}</td>
-                        <td>{this.state.customers[key].distributorName}</td>
-                        <td>{this.state.customers[key].distributorContact}</td>
-                        <td style={{ display: 'none' }}>{this.state.customers[key].distributorAddress}</td>
-
-                        {/* <td style={{visibility:'hidden'}}>{this.state.customers[key].customerAddress}</td>
+                            {/* <td style={{visibility:'hidden'}}>{this.state.customers[key].customerAddress}</td>
                         <td style={{visibility:'hidden'}}>{this.state.customers[key].distributorAddress}</td>*/}
 
-                        {/*<td>
+                            {/*<td>
                             {this.state.customers[key].status ?
                                 <span className="badge badge-success">Active</span>
                                 :
                                 <span className="badge badge-danger">In Active</span>
                             }
                         </td>*/}
-                        <td>
-                            <p data-placement="top" data-toggle="tooltip" title="Edit">
-                                <Link className="btn btn-primary btn-xs" to={'/customer/edit/' + this.state.customers[key].customerID}>
-                                    {/*<button className="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" >*/}
-                                    <span className="fa fa-pencil"></span></Link></p></td>
-                        <td>
-                            <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                <button className="btn btn-danger btn-xs" onClick={this.toggleDelete.bind(this, key)} >
-                                    <span className="fa fa-trash-o"></span></button></p>
-                        </td>
-                    </tr>
+                            <td>
+                                <p data-placement="top" data-toggle="tooltip" title="Edit">
+                                    <Link className="btn btn-primary btn-xs" to={'/customer/edit/' + this.state.customers[key].customerID}>
+                                        {/*<button className="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" >*/}
+                                        <span className="fa fa-pencil"></span></Link></p></td>
+                            <td>
+                                <p data-placement="top" data-toggle="tooltip" title="Delete">
+                                    <button className="btn btn-danger btn-xs" onClick={this.toggleDelete.bind(this, key)} >
+                                        <span className="fa fa-trash-o"></span></button></p>
+                            </td>
+                        </tr>
+                    )
+
+
+                })
                 )
-            })
-        )
+        } else {
+            return (
+                <tr >
+                    <td colSpan='9' style={{textAlign:'center'}}> <strong>No Results found Please Search Again. </strong></td>
+                </tr>
+            )
+
+        }
+        
     }
     render() {
         let paginate;
@@ -384,7 +396,7 @@ class Customer extends Component {
                                         <CheckAuthoriztion permissions={[]}>
                                             <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link> {'  '}
                                         </CheckAuthoriztion>
-                                        
+
                                         <button onClick={this.toggleExport.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Excel</button>{'   '}
 
 
@@ -498,9 +510,9 @@ class Customer extends Component {
                                     <ModalFooter>
                                         <Button color="primary" onClick={this.export.bind(this, 'a')}>All Results</Button>
                                         {' '}
-                                        <Button color="primary" onClick={this.export.bind(this, 'v')}>Visible Results</Button>
+                                        <Button color="primary" onClick={this.export.bind(this, 'v')}>Current page Results</Button>
                                         {' '}
-                                        <Button color="primary" onClick={this.export.bind(this, 'f')}>Filtered Results</Button>
+                                        <Button color="primary" onClick={this.export.bind(this, 'f')}>All searched Results</Button>
                                     </ModalFooter>
                                 </Modal>
                                 <Modal isOpen={this.state.modalExportPdf} toggle={this.toggleExportPdf.bind(this)} className="my-modal">
@@ -511,9 +523,9 @@ class Customer extends Component {
                                     <ModalFooter>
                                         <Button color="primary" onClick={this.exportPdf.bind(this, 'a')}>All Results</Button>
                                         {' '}
-                                        <Button color="primary" onClick={this.exportPdf.bind(this, 'v')}>Visible Results</Button>
+                                        <Button color="primary" onClick={this.exportPdf.bind(this, 'v')}>Current page Results</Button>
                                         {' '}
-                                        <Button color="primary" onClick={this.exportPdf.bind(this, 'f')}>Filtered Results</Button>
+                                        <Button color="primary" onClick={this.exportPdf.bind(this, 'f')}>All searched Results</Button>
 
                                     </ModalFooter>
                                 </Modal>
