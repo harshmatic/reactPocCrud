@@ -117,14 +117,14 @@ class CustomerSave extends Component {
         });
     }
     ifFormValid(){
-        if(this.state.customer.customerAddress===""||
-           this.state.customer.customerName===""||
-           this.state.customer.customerEmail===""||
-           this.state.customer.dateOfBirth===""||
-           this.state.customer.distributorAddress===""||
-           this.state.customer.distributorContact===""||
-           this.state.customer.distributorName===""||
-           this.state.customer.mobile===""
+        if( this.state.customer.customerAddress==null || this.state.customer.customerAddress.trim()===""||
+           this.state.customer.customerName==null || this.state.customer.customerName.trim()===""||
+           this.state.customer.customerEmail==null || this.state.customer.customerEmail.trim()===""||
+           this.state.customer.dateOfBirth==null || this.state.customer.dateOfBirth===""||
+           this.state.customer.distributorAddress==null || this.state.customer.distributorAddress.trim()===""||
+           this.state.customer.distributorContact==null || this.state.customer.distributorContact.trim()===""||
+           this.state.customer.distributorName==null || this.state.customer.distributorName.trim()===""||
+           this.state.customer.mobile==null || this.state.customer.mobile.trim()===""
             ){
                   return true
         }
