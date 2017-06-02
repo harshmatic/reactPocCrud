@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {api} from '../../../config';
-
+import { toast } from 'react-toastify';
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -17,8 +17,13 @@ class Login extends Component {
           axios.post(`http://192.168.101.162:6058/api/auth/token`,this.state)
                 .then(res => {
                    localStorage.setItem('accessToken',res.data.token) 
+                   toast.success('Login Successfull');
                    this.getPermissions()
-                });
+                }).catch(err => {
+                    debugger
+                    toast.error(err.response.data);
+
+                });;
     }  
   }
   getPermissions(){
