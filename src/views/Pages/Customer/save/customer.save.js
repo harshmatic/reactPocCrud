@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
@@ -7,7 +7,7 @@ import Validation from 'react-validation';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
 import { createBrowserHistory } from 'history';
-import {api} from '../../../../config';
+import { api } from '../../../../config';
 export const history = createBrowserHistory();
 
 class CustomerSave extends Component {
@@ -28,7 +28,7 @@ class CustomerSave extends Component {
                 "distributorAddress": "",
                 "distributorContact": "",
             },
-            validation:{
+            validation: {
                 "customerName": "",
                 "mobile": "",
                 //"landline": "",
@@ -40,7 +40,7 @@ class CustomerSave extends Component {
                 "distributorAddress": "",
                 "distributorContact": ""
             }
-         //   dateOfBirth: moment()
+            //   dateOfBirth: moment()
 
         };
         this.handleChange = this
@@ -52,19 +52,41 @@ class CustomerSave extends Component {
         this.ifFormValid = this.ifFormValid.bind(this);
     }
 
+    componentWillMount() {
+        if (this.props.match.params.employeeID) {
+            if (localStorage.getItem('loggedInUserPermission') !== null) {
+                var logggedInUserPermission = JSON.parse(localStorage.getItem('loggedInUserPermission'));
+
+                if (logggedInUserPermission.indexOf('OB.U') === -1) {
+                    window.location.href = '/#/not-authorize'
+                    return;
+                }
+            }
+        } else {
+            if (localStorage.getItem('loggedInUserPermission') !== null) {
+                var logggedInUserPermission = JSON.parse(localStorage.getItem('loggedInUserPermission'));
+
+                if (logggedInUserPermission.indexOf('OB.C') === -1) {
+                    window.location.href = '/#/not-authorize'
+                    return;
+                }
+            }
+
+        }
+    }
     componentDidMount() {
         if (this.props.match.params.employeeID) {
             axios
-                .get(api+`/customers/` + this.props.match.params.employeeID)
+                .get(api + `/customers/` + this.props.match.params.employeeID)
                 .then(res => {
                     const customer = res.data
-                    this.setState({customer});
+                    this.setState({ customer });
                 });
-        }else{
-            this.setState({disableSave:true})
+        } else {
+            this.setState({ disableSave: true })
         }
     }
-     handleInputChange(event) {
+    handleInputChange(event) {
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -74,33 +96,33 @@ class CustomerSave extends Component {
             customer: formData
         });
     }
-    validate(event){
+    validate(event) {
         const target = event.target;
         const value = target.value;
         const name = target.name;
         let validations = Object.assign({}, this.state.validation);
-        if(value.trim()==""){
+        if (value.trim() == "") {
             validations[name] = "Required";
-        }else if(name==="customerEmail"){
-            if(EmailRegex.test(value)){
+        } else if (name === "customerEmail") {
+            if (EmailRegex.test(value)) {
                 validations[name] = "";
             } else {
-                validations[name] ="Not a valid email"
+                validations[name] = "Not a valid email"
             }
-        } else if(name==="dateOfBirth"){
-            if(DateRegex.test(value)){
+        } else if (name === "dateOfBirth") {
+            if (DateRegex.test(value)) {
                 validations[name] = "";
             } else {
-                validations[name] ="Not a valid Date(MM/DD/YYYY)"
+                validations[name] = "Not a valid Date(MM/DD/YYYY)"
             }
-        } else if(name==="mobile"||name==="distributorContact"){
-            if(NumberRegex.test(value)){
+        } else if (name === "mobile" || name === "distributorContact") {
+            if (NumberRegex.test(value)) {
                 validations[name] = "";
             } else {
-                validations[name] ="Not a valid contact number"
+                validations[name] = "Not a valid contact number"
             }
-        }else{
-            validations[name] = "";  
+        } else {
+            validations[name] = "";
         }
         this.setState({
             validation: validations
@@ -116,46 +138,46 @@ class CustomerSave extends Component {
             customer: formData
         });
     }
-    ifFormValid(){
-        if( this.state.customer.customerAddress==null || this.state.customer.customerAddress.trim()===""||
-           this.state.customer.customerName==null || this.state.customer.customerName.trim()===""||
-           this.state.customer.customerEmail==null || this.state.customer.customerEmail.trim()===""||
-           this.state.customer.dateOfBirth==null || this.state.customer.dateOfBirth===""||
-           this.state.customer.distributorAddress==null || this.state.customer.distributorAddress.trim()===""||
-           this.state.customer.distributorContact==null || this.state.customer.distributorContact.trim()===""||
-           this.state.customer.distributorName==null || this.state.customer.distributorName.trim()===""||
-           this.state.customer.mobile==null || this.state.customer.mobile.trim()===""
-            ){
-                  return true
+    ifFormValid() {
+        if (this.state.customer.customerAddress == null || this.state.customer.customerAddress.trim() === "" ||
+            this.state.customer.customerName == null || this.state.customer.customerName.trim() === "" ||
+            this.state.customer.customerEmail == null || this.state.customer.customerEmail.trim() === "" ||
+            this.state.customer.dateOfBirth == null || this.state.customer.dateOfBirth === "" ||
+            this.state.customer.distributorAddress == null || this.state.customer.distributorAddress.trim() === "" ||
+            this.state.customer.distributorContact == null || this.state.customer.distributorContact.trim() === "" ||
+            this.state.customer.distributorName == null || this.state.customer.distributorName.trim() === "" ||
+            this.state.customer.mobile == null || this.state.customer.mobile.trim() === ""
+        ) {
+            return true
         }
         return false
     }
-    save(){
-        if(this.state.customer.customerID==""){
+    save() {
+        if (this.state.customer.customerID == "") {
             axios
-                .post(api+`/customers`,this.state.customer)
+                .post(api + `/customers`, this.state.customer)
                 .then(res => {
                     this.props.history.push('/customer/list');
                     toast.success("Added Successfully")
-                    
-                }).catch(err=> {
-                toast.error("Something went wrong");
-                
-            });
-        }else{
-             axios
-                .put(api+`/customers/` + this.props.match.params.employeeID,this.state.customer)
+
+                }).catch(err => {
+                    toast.error("Something went wrong");
+
+                });
+        } else {
+            axios
+                .put(api + `/customers/` + this.props.match.params.employeeID, this.state.customer)
                 .then(res => {
                     const customer = res.data
-                     this.props.history.push('/customer/list');
+                    this.props.history.push('/customer/list');
                     toast.success("Updated Successfully")
-                    this.setState({customer});
-                }).catch(err=> {
-                toast.error("Something went wrong");
-                
-            });; 
+                    this.setState({ customer });
+                }).catch(err => {
+                    toast.error("Something went wrong");
+
+                });;
         }
-          
+
     }
     render() {
 
@@ -168,60 +190,60 @@ class CustomerSave extends Component {
                             <strong>Customer Form</strong>
                         </div>
                         <div className="card-block">
-                         <div className="row">
-                            <div className="form-group  col-sm-6">
-                                <label htmlFor="company">Consumer Name*</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="company"
-                                    placeholder="Enter consumer's name"
-                                    name='customerName' 
-                                    onChange={this.handleInputChange} 
-                                    onBlur={this.validate}
-                                    value={this.state.customer.customerName}/>
-                                   <span style={styles.validationError}> {this.state.validation.customerName}</span>
+                            <div className="row">
+                                <div className="form-group  col-sm-6">
+                                    <label htmlFor="company">Consumer Name*</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="company"
+                                        placeholder="Enter consumer's name"
+                                        name='customerName'
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.validate}
+                                        value={this.state.customer.customerName} />
+                                    <span style={styles.validationError}> {this.state.validation.customerName}</span>
+                                </div>
+                                <div className="form-group col-sm-6">
+                                    <label htmlFor="vat">Contact Number*</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="vat"
+                                        name='mobile'
+                                        onChange={this.handleInputChange}
+                                        value={this.state.customer.mobile}
+                                        onBlur={this.validate}
+                                        placeholder="Enter consumer's contact number" />
+                                    <span style={styles.validationError}> {this.state.validation.mobile}</span>
+                                </div>
                             </div>
-                            <div className="form-group col-sm-6">
-                                <label htmlFor="vat">Contact Number*</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="vat"
-                                    name='mobile' 
-                                    onChange={this.handleInputChange} 
-                                    value={this.state.customer.mobile}
-                                     onBlur={this.validate}
-                                    placeholder="Enter consumer's contact number"/>
-                                   <span style={styles.validationError}> {this.state.validation.mobile}</span>                                
-                            </div>
-                            </div>
-                         <div className="row">
-                            <div className="form-group col-sm-6">
-                                <label htmlFor="street">Email ID*</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="street"
-                                    name='customerEmail' 
-                                    onChange={this.handleInputChange} 
-                                    value={this.state.customer.customerEmail}
-                                     onBlur={this.validate}
-                                    placeholder="Enter consumer's email"/>                      
-                                <span style={styles.validationError}> {this.state.validation.customerEmail}</span>                                
-                            </div>
-                            <div className="form-group col-sm-6">
-                                    <label htmlFor="city">Date Of Birth*</label><br/>
+                            <div className="row">
+                                <div className="form-group col-sm-6">
+                                    <label htmlFor="street">Email ID*</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="street"
+                                        name='customerEmail'
+                                        onChange={this.handleInputChange}
+                                        value={this.state.customer.customerEmail}
+                                        onBlur={this.validate}
+                                        placeholder="Enter consumer's email" />
+                                    <span style={styles.validationError}> {this.state.validation.customerEmail}</span>
+                                </div>
+                                <div className="form-group col-sm-6">
+                                    <label htmlFor="city">Date Of Birth*</label><br />
                                     <DatePicker
                                         selected={moment(this.state.customer.dateOfBirth)}
                                         onChange={this.handleChange}
                                         className="form-control"
                                         id="dob"
-                                        name='dateOfBirth' 
+                                        name='dateOfBirth'
                                         onBlur={this.validate}
-                                        placeholder="Enter consumer's DOB"/>                      
-                                    <span style={styles.validationError}> {this.state.validation.dateOfBirth}</span>  
-                            </div>
+                                        placeholder="Enter consumer's DOB" />
+                                    <span style={styles.validationError}> {this.state.validation.dateOfBirth}</span>
+                                </div>
                             </div>
                             <div className="row">
                                 <div className="form-group col-sm-12">
@@ -231,43 +253,43 @@ class CustomerSave extends Component {
                                         name="textarea-input"
                                         rows="4"
                                         className="form-control"
-                                        name='customerAddress' 
-                                    onChange={this.handleInputChange} 
-                                     onBlur={this.validate}
-                                    value={this.state.customer.customerAddress}
-                                        placeholder="Enter consumer's present address"></textarea>                      
-                                <span style={styles.validationError}> {this.state.validation.customerAddress}</span>  
+                                        name='customerAddress'
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.validate}
+                                        value={this.state.customer.customerAddress}
+                                        placeholder="Enter consumer's present address"></textarea>
+                                    <span style={styles.validationError}> {this.state.validation.customerAddress}</span>
                                 </div>
                             </div>
-                             <div className="row">
-                            <div className="form-group col-sm-6">
-                                <label htmlFor="country">Distributor Name*</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="country"
-                                     name='distributorName' 
-                                    onChange={this.handleInputChange} 
-                                    value={this.state.customer.distributorName}
-                                     onBlur={this.validate}
-                                    placeholder="Enter ditributor name"/>                      
-                                <span style={styles.validationError}> {this.state.validation.distributorName}</span>  
-                                    
-                            </div>
-                            <div className="form-group col-sm-6">
-                                <label htmlFor="country">Distributor Contact*</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="country"
-                                     name='distributorContact' 
-                                    onChange={this.handleInputChange} 
-                                    value={this.state.customer.distributorContact}
-                                     onBlur={this.validate}
-                                    placeholder="Enter distributor contact"/>                      
-                                <span style={styles.validationError}> {this.state.validation.distributorContact}</span>  
-                                    
-                            </div>
+                            <div className="row">
+                                <div className="form-group col-sm-6">
+                                    <label htmlFor="country">Distributor Name*</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="country"
+                                        name='distributorName'
+                                        onChange={this.handleInputChange}
+                                        value={this.state.customer.distributorName}
+                                        onBlur={this.validate}
+                                        placeholder="Enter ditributor name" />
+                                    <span style={styles.validationError}> {this.state.validation.distributorName}</span>
+
+                                </div>
+                                <div className="form-group col-sm-6">
+                                    <label htmlFor="country">Distributor Contact*</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="country"
+                                        name='distributorContact'
+                                        onChange={this.handleInputChange}
+                                        value={this.state.customer.distributorContact}
+                                        onBlur={this.validate}
+                                        placeholder="Enter distributor contact" />
+                                    <span style={styles.validationError}> {this.state.validation.distributorContact}</span>
+
+                                </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="country">Distributor Address*</label>
@@ -276,14 +298,14 @@ class CustomerSave extends Component {
                                     name="textarea-input"
                                     rows="4"
                                     className="form-control"
-                                     name='distributorAddress' 
-                                    onChange={this.handleInputChange} 
+                                    name='distributorAddress'
+                                    onChange={this.handleInputChange}
                                     value={this.state.customer.distributorAddress}
-                                     onBlur={this.validate}
-                                    placeholder="Enter ditributor address"></textarea>                      
-                                <span style={styles.validationError}> {this.state.validation.distributorAddress}</span>  
+                                    onBlur={this.validate}
+                                    placeholder="Enter ditributor address"></textarea>
+                                <span style={styles.validationError}> {this.state.validation.distributorAddress}</span>
                             </div>
-                             <div className="form-group">
+                            <div className="form-group">
                                 <button onClick={this.save} className="btn btn-primary" disabled={this.ifFormValid()}>Save</button>
                             </div>
                         </div>
@@ -296,10 +318,10 @@ class CustomerSave extends Component {
 
 export default CustomerSave;
 
-const styles={
+const styles = {
     validationError: {
         color: 'red',
-        margin:'5px 0',
+        margin: '5px 0',
         display: 'inline-block',
     }
 }

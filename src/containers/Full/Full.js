@@ -23,7 +23,12 @@ import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/'
 import NotAuthorize from '../../views/Pages/NotAuthorize/NotAuthorize'
 
 class Full extends Component {
-  
+  componentWillMount() {
+    if (localStorage.getItem("accessToken") === null) {
+      window.location.href = '/#/login';
+      return
+    }
+  }
   render() {
     return (
       <div className="app">
@@ -36,9 +41,9 @@ class Full extends Component {
               <Switch>
                 <Route path="/dashboard" name="Dashboard" component={Dashboard} />
                 <Route path="/not-authorize" name="NotAuthorize" component={NotAuthorize} />
-                <Route path="/customer/list"  onEnter={requireAuth(['OB.R'])} name="Customer Page" component={Customer} />
-                <Route path="/customer/add" name="Customer Add"  onEnter={requireAuth(['OB.C'])} component={CustomerSave} />
-                <Route path="/customer/edit/:employeeID" name="Customer Edit"  onEnter={requireAuth(['OB.U'])} component={CustomerSave} />
+                <Route exact path="/customer/list" name="Customer Page" component={Customer} />
+                <Route exact path="/customer/add" name="Customer Add" component={CustomerSave} />
+                <Route exact path="/customer/edit/:employeeID" name="Customer Edit" component={CustomerSave} />
                 <Route path="/components/buttons" name="Buttons" component={Buttons} />
                 <Route path="/components/cards" name="Cards" component={Cards} />
                 <Route path="/components/forms" name="Forms" component={Forms} />
@@ -53,7 +58,7 @@ class Full extends Component {
                 <Route path="/charts" name="Charts" component={Charts} />
                 <Redirect from="/customer" to="/customer/list" />
                 <Redirect from="/" to="/dashboard" />
-                 
+
               </Switch>
             </div>
           </main>
@@ -66,24 +71,4 @@ class Full extends Component {
 }
 
 export default Full;
-function requireAuth(permissions){
-  if(localStorage.getItem("accessToken")===null){
-      window.location.href='/#/login';
-      return
-  }
-  // else{
-  //    if (localStorage.getItem('loggedInUserPermission') !== null) {
-  //         var logggedInUserPermission = JSON.parse(localStorage.getItem('loggedInUserPermission'));
-  //         for (var i = 0; i < permissions.length; i++) {
-  //             if (logggedInUserPermission.indexOf(permissions[i]) === -1) {
-  //                 window.location.href='/#/not-authorize'
-  //                 return;
-  //             }
-  //         }
-  //    } else {
-  //       return ;
-  //   }
-  // }
- //var userPermissions=JSON.parse(localStorage.getItem("loggedInUserPermission"))
- //window.location.href='/#/not-authorize'
-}
+

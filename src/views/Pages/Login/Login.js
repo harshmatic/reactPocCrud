@@ -18,7 +18,8 @@ class Login extends Component {
                 .then(res => {
                    localStorage.setItem('accessToken',res.data.token) 
                    toast.success('Login Successfull');
-                   this.getPermissions()
+                   this.getPermissions();
+                   this.getUserDetails();
                 }).catch(err => {
                     toast.error(err.response.data);
                 });;
@@ -34,6 +35,19 @@ class Login extends Component {
                    localStorage.setItem('loggedInUserPermission',JSON.stringify(res.data)) 
                     this.props.history.push('/customer/list');
                 });
+  }
+  getUserDetails() {
+    let headers={
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+          }
+        axios.get(`http://192.168.101.162:6058/api/profile`, {headers})
+                .then(res => {
+                   localStorage.setItem('loggedInUserDetails',JSON.stringify(res.data)) 
+                   console.log(localStorage.getItem('loggedInUserDetails')["firstName"]);
+                    this.props.history.push('/customer/list');
+                });
+    
   }
   render() {
     return (

@@ -53,7 +53,16 @@ class Customer extends Component {
         this.searchRequests = [];
     }
 
-
+    componentWillMount() {
+        if (localStorage.getItem('loggedInUserPermission') !== null) {
+          var logggedInUserPermission = JSON.parse(localStorage.getItem('loggedInUserPermission'));
+          
+              if (logggedInUserPermission.indexOf('OB.R') === -1) {
+                  window.location.href='/#/not-authorize'
+                  return;
+          }
+     }
+    }
     handlePdf() {
         var columns = [
             { title: "Customer Name", dataKey: "customerName" },
