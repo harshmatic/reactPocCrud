@@ -6,7 +6,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'react
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { createBrowserHistory } from 'history';
-import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import CheckAuthoriztion from './checkAuthoriztion';
 import { api } from '../../../config';
 const pdfConverter = require('jspdf');
@@ -296,7 +295,7 @@ class Customer extends Component {
     renderCustomers() {
         moment.locale('en');
         console.log(this.state.customers)
-        if (this.state.customers.length>0) {
+        if (this.state.customers.length > 0) {
             return (
                 Object.keys(this.state.customers).map((key) => {
 
@@ -309,49 +308,43 @@ class Customer extends Component {
                                     {this.state.customers[key].customerName}
                                 </a>
                             </td>
-                            <td>{this.state.customers[key].mobile}</td>
-                            <td>{this.state.customers[key].customerEmail}</td>
-                            <td>{moment(this.state.customers[key].dateOfBirth).format('D MMM, Y')} </td>
-                            <td style={{ display: 'none' }}>{this.state.customers[key].customerAddress}</td>
-                            <td>{this.state.customers[key].distributorName}</td>
-                            <td>{this.state.customers[key].distributorContact}</td>
-                            <td style={{ display: 'none' }}>{this.state.customers[key].distributorAddress}</td>
-
-                            {/* <td style={{visibility:'hidden'}}>{this.state.customers[key].customerAddress}</td>
-                        <td style={{visibility:'hidden'}}>{this.state.customers[key].distributorAddress}</td>*/}
-
-                            {/*<td>
-                            {this.state.customers[key].status ?
-                                <span className="badge badge-success">Active</span>
-                                :
-                                <span className="badge badge-danger">In Active</span>
-                            }
-                        </td>*/}
+                            <td className="five">{this.state.customers[key].mobile}</td>
+                            <td className="four">{this.state.customers[key].customerEmail}</td>
+                            <td className="three">{moment(this.state.customers[key].dateOfBirth).format('D MMM, Y')} </td>
+                            <td className="two">{this.state.customers[key].distributorName}</td>
+                            <td className="one">{this.state.customers[key].distributorContact}</td>
                             <td>
-                                <p data-placement="top" data-toggle="tooltip" title="Edit">
-                                    <Link className="btn btn-primary btn-xs" to={'/customer/edit/' + this.state.customers[key].customerID}>
-                                        {/*<button className="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" >*/}
-                                        <span className="fa fa-pencil"></span></Link></p></td>
-                            <td>
-                                <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                    <button className="btn btn-danger btn-xs" onClick={this.toggleDelete.bind(this, key)} >
-                                        <span className="fa fa-trash-o"></span></button></p>
+                                {/*<div className="mobile ">
+                                    <span className="fa fa-ellipsis-h btn btn-primary btn-sm "></span>
+                                    <div>
+                                        <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
+                                            <span className="fa fa-pencil edit"></span>
+                                        </Link>
+                                        <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}></span>
+                                    </div>
+                                </div>*/}
+                                <div className="screen">
+                                    <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
+                                        <span className="fa fa-pencil edit"></span>
+                                    </Link>
+                                    <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}></span>
+                                </div>
                             </td>
                         </tr>
                     )
 
 
                 })
-                )
+            )
         } else {
             return (
                 <tr >
-                    <td colSpan='9' style={{textAlign:'center'}}> <strong>No Results found Please Search Again. </strong></td>
+                    <td colSpan='9' style={{ textAlign: 'center' }}> <strong>No Results found Please Search Again. </strong></td>
                 </tr>
             )
 
         }
-        
+
     }
     render() {
         let paginate;
@@ -394,12 +387,11 @@ class Customer extends Component {
                                 <div className="row">
                                     <div className="col-lg-8 button-custom">
                                         <CheckAuthoriztion permissions={[]}>
-                                            <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link> {'  '}
+                                            <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link>
+                                            {'  '}
                                         </CheckAuthoriztion>
-
-                                        <button onClick={this.toggleExport.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Excel</button>{'   '}
-
-
+                                        <button onClick={this.toggleExport.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Excel</button>
+                                        {'   '}
                                         <button onClick={this.toggleExportPdf.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Pdf</button>
                                     </div>
                                     <div className="col-lg-4 search-custom">
@@ -418,14 +410,12 @@ class Customer extends Component {
                                         <tr>
                                             <th></th>
                                             <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
-                                            {/*<th onClick={this.handleSort.bind(this, 'status', 'asc')}>Consumer Status<i className="fa fa-arrows-v arrow ns"/></th>*/}
-                                            <th>Edit</th>
-                                            <th>Delete</th>
+                                            <th className="five" onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th className="four" onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th className="three" onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th className="two" onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th className="one" onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th style={{ textAlign: 'center' }}>Action Items</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -434,9 +424,7 @@ class Customer extends Component {
                                 </Table>
 
                                 <div style={{ paddingTop: '20px' }}>
-                                    {/*<div className="col-lg-12">*/}
                                     {paginate}
-                                    {/*</div>*/}
                                 </div>
 
 
@@ -531,10 +519,6 @@ class Customer extends Component {
                                 </Modal>
                                 <div id="loader-wrapper" style={{ display: this.state.loader }}>
                                     <div id="loader"></div>
-
-                                    {/*<div className="loader-section section-left"></div>
-                                    <div className="loader-section section-right"></div>*/}
-
                                 </div>
                             </div>
                         </div>
