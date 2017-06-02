@@ -7,6 +7,7 @@ class Header extends Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.logout = this.logout.bind(this);
     this.state = {
       dropdownOpen: false
     };
@@ -37,7 +38,10 @@ class Header extends Component {
     e.preventDefault();
     document.body.classList.toggle('aside-menu-hidden');
   }
-
+  logout(){
+    localStorage.clear();
+    window.location.href='/#/login'
+  }
   render() {
     return (
       <header className="app-header navbar">
@@ -76,21 +80,10 @@ class Header extends Component {
 
               <DropdownMenu className="dropdown-menu-right">
                 <DropdownItem header className="text-center"><strong>Account</strong></DropdownItem>
-
-                <DropdownItem><i className="fa fa-bell-o"></i> Updates<span className="badge badge-info">42</span></DropdownItem>
-                <DropdownItem><i className="fa fa-envelope-o"></i> Messages<span className="badge badge-success">42</span></DropdownItem>
-                <DropdownItem><i className="fa fa-tasks"></i> Tasks<span className="badge badge-danger">42</span></DropdownItem>
-                <DropdownItem><i className="fa fa-comments"></i> Comments<span className="badge badge-warning">42</span></DropdownItem>
-
-                <DropdownItem header className="text-center"><strong>Settings</strong></DropdownItem>
-
                 <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
                 <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
-                <DropdownItem><i className="fa fa-usd"></i> Payments<span className="badge badge-default">42</span></DropdownItem>
-                <DropdownItem><i className="fa fa-file"></i> Projects<span className="badge badge-primary">42</span></DropdownItem>
                 <DropdownItem divider />
-                <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem>
-                <DropdownItem><i className="fa fa-lock"></i> Logout</DropdownItem>
+                <DropdownItem onClick={this.logout}><i className="fa fa-lock"></i> Logout</DropdownItem>
 
               </DropdownMenu>
             </Dropdown>

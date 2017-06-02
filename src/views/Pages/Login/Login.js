@@ -20,9 +20,7 @@ class Login extends Component {
                    toast.success('Login Successfull');
                    this.getPermissions()
                 }).catch(err => {
-                    debugger
                     toast.error(err.response.data);
-
                 });;
     }  
   }

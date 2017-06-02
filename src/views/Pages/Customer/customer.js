@@ -6,7 +6,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'react
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { createBrowserHistory } from 'history';
-import CheckAuthoriztion from './checkAuthoriztion';
+import CheckAuthoriztion from '../../Components/CheckAuthoriztion/checkAuthoriztion';
 import { api } from '../../../config';
 const pdfConverter = require('jspdf');
 export const history = createBrowserHistory();
@@ -324,10 +324,14 @@ class Customer extends Component {
                                     </div>
                                 </div>*/}
                                 <div className="screen">
-                                    <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
-                                        <span className="fa fa-pencil edit"></span>
-                                    </Link>
-                                    <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}></span>
+                                     <CheckAuthoriztion permissions={['OB.U']}>
+                                         <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
+                                           <span className="fa fa-pencil edit"></span>
+                                        </Link>
+                                    </CheckAuthoriztion>
+                                    <CheckAuthoriztion permissions={['OB.D']}>
+                                        <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}></span>
+                                    </CheckAuthoriztion>
                                 </div>
                             </td>
                         </tr>
@@ -386,7 +390,7 @@ class Customer extends Component {
                             <div className="card-block">
                                 <div className="row">
                                     <div className="col-lg-8 button-custom">
-                                        <CheckAuthoriztion permissions={[]}>
+                                        <CheckAuthoriztion permissions={['OB.C']}>
                                             <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link>
                                             {'  '}
                                         </CheckAuthoriztion>
@@ -472,8 +476,12 @@ class Customer extends Component {
 
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Link className="btn btn-primary" to={'/customer/edit/' + this.state.customer.customerID}>Edit</Link>{' '}
-                                        <Button color="secondary" onClick={this.delete.bind(this, this.state.customer.customerID)}>Delete</Button>
+                                         <CheckAuthoriztion permissions={['OB.U']}>
+                                            <Link className="btn btn-primary" to={'/customer/edit/' + this.state.customer.customerID}>Edit</Link>{' '}
+                                        </CheckAuthoriztion>
+                                         <CheckAuthoriztion permissions={['OB.D']}>
+                                            <Button color="secondary" onClick={this.delete.bind(this, this.state.customer.customerID)}>Delete</Button>
+                                        </CheckAuthoriztion>
                                     </ModalFooter>
                                 </Modal>
 
