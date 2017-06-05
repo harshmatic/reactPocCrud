@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom'
-
+import CheckAuthoriztion from '../../views/Components/CheckAuthoriztion/checkAuthoriztion';
 class Sidebar extends Component {
 
   handleClick(e) {
@@ -77,12 +77,10 @@ class Sidebar extends Component {
             <li className="nav-title">
               Extras
             </li>*/}
-            <li className="nav-item nav-dropdown">
+            {/*<li className="nav-item nav-dropdown">
               <a className="nav-link nav-dropdown-toggle" href="#" onClick={this.handleClick.bind(this)}><i className="icon-star"></i> Pages</a>
               <ul className="nav-dropdown-items">
-                <li className="nav-item">
-                  <NavLink to={'/customer/list'} className="nav-link" activeClassName="active"><i className="icon-user"></i> Customer Page</NavLink>
-                </li>
+                
                 <li className="nav-item">
                   <NavLink to={'/login'} className="nav-link" activeClassName="active"><i className="icon-star"></i> Login</NavLink>
                 </li>
@@ -96,10 +94,24 @@ class Sidebar extends Component {
                   <NavLink to={'/500'} className="nav-link" activeClassName="active"><i className="icon-star"></i> Error 500</NavLink>
                 </li>
               </ul>
-            </li>
-            <li className="nav-item">
-                  <NavLink to={'/customer/list'} className="nav-link" activeClassName="active"><i className="icon-user"></i> Customer Page</NavLink>
+            </li>*/}
+            <li className="nav-item nav-dropdown">
+              <a className="nav-link nav-dropdown-toggle" href="#" onClick={this.handleClick.bind(this)}><i className="icon-people"></i> Customers</a>
+              <ul className="nav-dropdown-items">
+              <CheckAuthoriztion permissions={['OB.R']}>
+                <li className="nav-item">
+                  <NavLink to={'/customer/list'} className="nav-link" activeClassName="active"><i className="icon-user"></i> Customer Listing</NavLink>
                 </li>
+              </CheckAuthoriztion>
+              <CheckAuthoriztion permissions={['OB.C']}>
+                <li className="nav-item">
+                  <NavLink to={'/customer/add'} className="nav-link" activeClassName="active"><i className="icon-user-follow"></i> Add New Customer</NavLink>
+                </li>
+              </CheckAuthoriztion>
+                
+                
+              </ul>
+            </li>
           </ul>
         </nav>
       </div>
