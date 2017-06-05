@@ -6,6 +6,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'react
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { createBrowserHistory } from 'history';
+import { ButtonDropdown,Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import CheckAuthoriztion from '../../Components/CheckAuthoriztion/checkAuthoriztion';
 import { api } from '../../../config';
 const pdfConverter = require('jspdf');
@@ -33,8 +34,11 @@ class Customer extends Component {
             searchString: '',
             loader: 'none',
             sortDir: 'asc',
-            sort: { col: '', dir: '' }
+            sort: { col: '', dir: '' },
+             dropdownOpen: []
         };
+        
+        this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggle = this.toggle.bind(this);
         this.toggleDelete = this.toggleDelete.bind(this);
         this.delete = this.delete.bind(this);
@@ -93,6 +97,13 @@ class Customer extends Component {
         }
 
     }
+    toggleDropdown(key) {
+        let dropdownOpen=Object.assign([],this.state.dropdownOpen) ;
+        dropdownOpen[key]=!dropdownOpen[key]
+    this.setState({
+      dropdownOpen: dropdownOpen
+    });
+  }
     handleSort(key, dir, e) {
         this.setState({ loader: '' });
         var elementArray = document.getElementsByClassName('ns');
@@ -331,6 +342,7 @@ class Customer extends Component {
                                     </div>
                                 </div>*/}
                                 <div className="screen">
+                                    <div className="hide-mobile">
                                     <CheckAuthoriztion permissions={['OB.U']}>
                                         <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
                                             <span className="fa fa-pencil edit"></span>
@@ -339,6 +351,32 @@ class Customer extends Component {
                                     <CheckAuthoriztion permissions={['OB.D']}>
                                         <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}></span>
                                     </CheckAuthoriztion>
+                                    </div>
+                                     <div className="mobile">
+                                    <Dropdown isOpen={this.state.dropdownOpen[key]} toggle={this.toggleDropdown.bind(null,key)}>
+                                        <span onClick={this.toggleDropdown.bind(null,key) }
+                                            className=" active dropdown p-0"
+                                            data-toggle="dropdown" 
+                                            aria-haspopup="true" 
+                                            aria-expanded={this.state.dropdownOpen[key]}>
+                                                    <i className="fa fa-ellipsis-v"></i>
+                                        </span>
+                                        <DropdownMenu>
+                                             <DropdownItem>
+                                                 <CheckAuthoriztion permissions={['OB.U']}>
+                                                    <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
+                                                        <span className="fa fa-pencil edit"> Edit</span>
+                                                    </Link>
+                                                </CheckAuthoriztion>
+                                             </DropdownItem>
+                                              <DropdownItem>
+                                                    <CheckAuthoriztion permissions={['OB.D']}>
+                                                      <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}> Delete</span>
+                                                  </CheckAuthoriztion>
+                                                 </DropdownItem>
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </div>
                                 </div>
                             </td>
                         </tr>
