@@ -44,7 +44,6 @@ class Login extends Component {
         axios.get(`http://192.168.101.162:6058/api/profile`, {headers})
                 .then(res => {
                    localStorage.setItem('loggedInUserDetails',JSON.stringify(res.data)) 
-                   console.log(localStorage.getItem('loggedInUserDetails')["firstName"]);
                     this.props.history.push('/customer/list');
                 });
     

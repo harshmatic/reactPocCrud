@@ -55,13 +55,13 @@ class Customer extends Component {
 
     componentWillMount() {
         if (localStorage.getItem('loggedInUserPermission') !== null) {
-          var logggedInUserPermission = JSON.parse(localStorage.getItem('loggedInUserPermission'));
-          
-              if (logggedInUserPermission.indexOf('OB.R') === -1) {
-                  window.location.href='/#/not-authorize'
-                  return;
-          }
-     }
+            var logggedInUserPermission = JSON.parse(localStorage.getItem('loggedInUserPermission'));
+
+            if (logggedInUserPermission.indexOf('OB.R') === -1) {
+                window.location.href = '/#/not-authorize'
+                return;
+            }
+        }
     }
     handlePdf() {
         var columns = [
@@ -228,7 +228,6 @@ class Customer extends Component {
     }
 
     componentDidMount() {
-        console.log(process.env.NODE_ENV);
         this.setState({ loader: '' });
         axios.get(api + `/customers`, config)
             .then(res => {
@@ -303,7 +302,6 @@ class Customer extends Component {
 
     renderCustomers() {
         moment.locale('en');
-        console.log(this.state.customers)
         if (this.state.customers.length > 0) {
             return (
                 Object.keys(this.state.customers).map((key) => {
@@ -333,9 +331,9 @@ class Customer extends Component {
                                     </div>
                                 </div>*/}
                                 <div className="screen">
-                                     <CheckAuthoriztion permissions={['OB.U']}>
-                                         <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
-                                           <span className="fa fa-pencil edit"></span>
+                                    <CheckAuthoriztion permissions={['OB.U']}>
+                                        <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
+                                            <span className="fa fa-pencil edit"></span>
                                         </Link>
                                     </CheckAuthoriztion>
                                     <CheckAuthoriztion permissions={['OB.D']}>
@@ -428,7 +426,14 @@ class Customer extends Component {
                                             <th className="three" onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
                                             <th className="two" onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
                                             <th className="one" onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th style={{ textAlign: 'center' }}>Action Items</th>
+
+                                            <th style={{ textAlign: 'center' }}>
+                                                <CheckAuthoriztion permissions={['OB.U']}>
+                                                    Action Items
+                                                         </CheckAuthoriztion>
+                                            </th>
+
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -485,10 +490,10 @@ class Customer extends Component {
 
                                     </ModalBody>
                                     <ModalFooter>
-                                         <CheckAuthoriztion permissions={['OB.U']}>
+                                        <CheckAuthoriztion permissions={['OB.U']}>
                                             <Link className="btn btn-primary" to={'/customer/edit/' + this.state.customer.customerID}>Edit</Link>{' '}
                                         </CheckAuthoriztion>
-                                         <CheckAuthoriztion permissions={['OB.D']}>
+                                        <CheckAuthoriztion permissions={['OB.D']}>
                                             <Button color="secondary" onClick={this.delete.bind(this, this.state.customer.customerID)}>Delete</Button>
                                         </CheckAuthoriztion>
                                     </ModalFooter>
