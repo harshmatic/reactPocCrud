@@ -319,19 +319,18 @@ class Customer extends Component {
 
                     return (
 
-                        <tr key={key}>
-                            <td style={{ backgroundColor: this.state.customers[key].status ? '#4dbd74' : '#f86c6b' }}> </td>
-                            <td>
+                        <tr key={key} style={{borderLeft: 'solid 5px', borderLeftColor: this.state.customers[key].status ? '#4dbd74' : '#f86c6b' }}>
+                            <td data-title="Customer Name">
                                 <a href="" onClick={this.toggle.bind(this, key)}>
                                     {this.state.customers[key].customerName}
                                 </a>
                             </td>
-                            <td className="five">{this.state.customers[key].mobile}</td>
-                            <td className="four">{this.state.customers[key].customerEmail}</td>
-                            <td className="three">{moment(this.state.customers[key].dateOfBirth).format('D MMM, Y')} </td>
-                            <td className="two">{this.state.customers[key].distributorName}</td>
-                            <td className="one">{this.state.customers[key].distributorContact}</td>
-                            <td>
+                            <td data-title="Contact" >{this.state.customers[key].mobile}</td>
+                            <td data-title="Email Id" >{this.state.customers[key].customerEmail}</td>
+                            <td data-title="DOB" >{moment(this.state.customers[key].dateOfBirth).format('D MMM, Y')} </td>
+                            <td data-title="Distributor Name" >{this.state.customers[key].distributorName}</td>
+                            <td data-title="Distributor Contact" >{this.state.customers[key].distributorContact}</td>
+                            <td data-title="Actions">
                                 {/*<div className="mobile ">
                                     <span className="fa fa-ellipsis-h btn btn-primary btn-sm "></span>
                                     <div>
@@ -454,21 +453,21 @@ class Customer extends Component {
                                     </div>
                                     <br /><br />
                                 </div>
-                                <Table responsive id="table-to-xls" className="table table-bordered table-striped table-sm">
+                                <div id="no-more-tables">
+                                   <Table responsive id="table-to-xls" className="table table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th></th>
                                             <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th className="five" onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th className="four" onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th className="three" onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th className="two" onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th className="one" onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th   onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th  onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th  onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
+                                            <th  onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
 
                                             <th style={{ textAlign: 'center' }}>
                                                 <CheckAuthoriztion permissions={['OB.U']}>
                                                     Action Items
-                                                         </CheckAuthoriztion>
+                                                </CheckAuthoriztion>
                                             </th>
 
 
@@ -477,7 +476,8 @@ class Customer extends Component {
                                     <tbody>
                                         {this.renderCustomers()}
                                     </tbody>
-                                </Table>
+                                   </Table>
+                                </div>
 
                                 <div style={{ paddingTop: '20px' }}>
                                     {paginate}
