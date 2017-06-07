@@ -70,6 +70,12 @@ th {
         display: none;
     }
 }
+@media only screen and (max-width: 801px) {
+    .search-custom input{
+        float:left !important;
+    }
+}
+
 .mobile {
   display:none
 }

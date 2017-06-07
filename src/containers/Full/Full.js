@@ -18,6 +18,7 @@ import SocialButtons from '../../views/Components/SocialButtons/'
 import Switches from '../../views/Components/Switches/'
 import Tables from '../../views/Components/Tables/'
 import Tabs from '../../views/Components/Tabs/'
+import {CustomerListContainer} from '../../modules/Customer/components/list/customer.container'
 import FontAwesome from '../../views/Icons/FontAwesome/'
 import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/'
 import NotAuthorize from '../../views/Pages/NotAuthorize/NotAuthorize'
@@ -40,6 +41,7 @@ class Full extends Component {
             <div className="container-fluid">
               <Switch>
                 <Route path="/dashboard" name="Dashboard" component={Dashboard} />
+                <Route path="/demo" name="demo" component={CustomerListContainer} />
                 <Route path="/not-authorize" name="NotAuthorize" component={NotAuthorize} />
                 <Route exact path="/customer/list" name="Customer Page" component={Customer} />
                 <Route exact path="/customer/add" name="Customer Add" component={CustomerSave} />

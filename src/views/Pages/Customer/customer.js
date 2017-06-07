@@ -6,7 +6,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'react
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { createBrowserHistory } from 'history';
-import { ButtonDropdown,Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { ButtonDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import CheckAuthoriztion from '../../Components/CheckAuthoriztion/checkAuthoriztion';
 import { api } from '../../../config';
 const pdfConverter = require('jspdf');
@@ -35,9 +35,9 @@ class Customer extends Component {
             loader: 'none',
             sortDir: 'asc',
             sort: { col: '', dir: '' },
-             dropdownOpen: []
+            dropdownOpen: []
         };
-        
+
         this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggle = this.toggle.bind(this);
         this.toggleDelete = this.toggleDelete.bind(this);
@@ -98,12 +98,12 @@ class Customer extends Component {
 
     }
     toggleDropdown(key) {
-        let dropdownOpen=Object.assign([],this.state.dropdownOpen) ;
-        dropdownOpen[key]=!dropdownOpen[key]
-    this.setState({
-      dropdownOpen: dropdownOpen
-    });
-  }
+        let dropdownOpen = Object.assign([], this.state.dropdownOpen);
+        dropdownOpen[key] = !dropdownOpen[key]
+        this.setState({
+            dropdownOpen: dropdownOpen
+        });
+    }
     handleSort(key, dir, e) {
         this.setState({ loader: '' });
         var elementArray = document.getElementsByClassName('ns');
@@ -319,7 +319,7 @@ class Customer extends Component {
 
                     return (
 
-                        <tr key={key} style={{borderLeft: 'solid 5px', borderLeftColor: this.state.customers[key].status ? '#4dbd74' : '#f86c6b' }}>
+                        <tr key={key} style={{ borderLeft: 'solid 5px', borderLeftColor: this.state.customers[key].status ? '#4dbd74' : '#f86c6b' }}>
                             <td data-title="Customer Name">
                                 <a href="" onClick={this.toggle.bind(this, key)}>
                                     {this.state.customers[key].customerName}
@@ -342,40 +342,40 @@ class Customer extends Component {
                                 </div>*/}
                                 <div className="screen">
                                     <div className="hide-mobile">
-                                    <CheckAuthoriztion permissions={['OB.U']}>
-                                        <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
-                                            <span className="fa fa-pencil edit"></span>
-                                        </Link>
-                                    </CheckAuthoriztion>
-                                    <CheckAuthoriztion permissions={['OB.D']}>
-                                        <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}></span>
-                                    </CheckAuthoriztion>
+                                        <CheckAuthoriztion permissions={['OB.U']}>
+                                            <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
+                                                <span className="fa fa-pencil edit"></span>
+                                            </Link>
+                                        </CheckAuthoriztion>
+                                        <CheckAuthoriztion permissions={['OB.D']}>
+                                            <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}></span>
+                                        </CheckAuthoriztion>
                                     </div>
-                                     <div className="mobile">
-                                    <Dropdown isOpen={this.state.dropdownOpen[key]} toggle={this.toggleDropdown.bind(null,key)}>
-                                        <span onClick={this.toggleDropdown.bind(null,key) }
-                                            className=" active dropdown p-0"
-                                            data-toggle="dropdown" 
-                                            aria-haspopup="true" 
-                                            aria-expanded={this.state.dropdownOpen[key]}>
-                                                    <i className="fa fa-ellipsis-v"></i>
-                                        </span>
-                                        <DropdownMenu>
-                                             <DropdownItem>
-                                                 <CheckAuthoriztion permissions={['OB.U']}>
-                                                    <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
-                                                        <span className="fa fa-pencil edit"> Edit</span>
-                                                    </Link>
-                                                </CheckAuthoriztion>
-                                             </DropdownItem>
-                                              <DropdownItem>
+                                    <div className="mobile">
+                                        <Dropdown isOpen={this.state.dropdownOpen[key]} toggle={this.toggleDropdown.bind(null, key)}>
+                                            <span onClick={this.toggleDropdown.bind(null, key)}
+                                                className=" active dropdown p-0"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded={this.state.dropdownOpen[key]}>
+                                                <i className="fa fa-ellipsis-v"></i>
+                                            </span>
+                                            <DropdownMenu>
+                                                <DropdownItem>
+                                                    <CheckAuthoriztion permissions={['OB.U']}>
+                                                        <Link to={'/customer/edit/' + this.state.customers[key].customerID}>
+                                                            <span className="fa fa-pencil edit"> Edit</span>
+                                                        </Link>
+                                                    </CheckAuthoriztion>
+                                                </DropdownItem>
+                                                <DropdownItem>
                                                     <CheckAuthoriztion permissions={['OB.D']}>
-                                                      <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}> Delete</span>
-                                                  </CheckAuthoriztion>
-                                                 </DropdownItem>
-                                        </DropdownMenu>
-                                    </Dropdown>
-                                </div>
+                                                        <span className="fa fa-trash-o delete" onClick={this.toggleDelete.bind(this, key)}> Delete</span>
+                                                    </CheckAuthoriztion>
+                                                </DropdownItem>
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -433,7 +433,7 @@ class Customer extends Component {
 
                             <div className="card-block">
                                 <div className="row">
-                                    <div className="col-lg-8 button-custom">
+                                    <div className="col-md-8 button-custom">
                                         <CheckAuthoriztion permissions={['OB.C']}>
                                             <Link to={'/customer/add'} className="btn btn-primary button-custom-inner" ><i className="fa fa-file-excel-o"></i> Add New Customer</Link>
                                             {'  '}
@@ -442,7 +442,7 @@ class Customer extends Component {
                                         {'   '}
                                         <button onClick={this.toggleExportPdf.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Pdf</button>
                                     </div>
-                                    <div className="col-lg-4 search-custom">
+                                    <div className="col-md-4 search-custom">
                                         <input
                                             id="search"
                                             type="text"
@@ -454,29 +454,29 @@ class Customer extends Component {
                                     <br /><br />
                                 </div>
                                 <div id="no-more-tables">
-                                   <Table responsive id="table-to-xls" className="table table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th   onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th  onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th  onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
-                                            <th  onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
+                                    <Table responsive id="table-to-xls" className="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th onClick={this.handleSort.bind(this, 'customerName', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns" /></th>
+                                                <th onClick={this.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns" /></th>
+                                                <th onClick={this.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
+                                                <th onClick={this.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
+                                                <th onClick={this.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
+                                                <th onClick={this.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
 
-                                            <th style={{ textAlign: 'center' }}>
-                                                <CheckAuthoriztion permissions={['OB.U']}>
-                                                    Action Items
+                                                <th style={{ textAlign: 'center' }}>
+                                                    <CheckAuthoriztion permissions={['OB.U']}>
+                                                        Action Items
                                                 </CheckAuthoriztion>
-                                            </th>
+                                                </th>
 
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.renderCustomers()}
-                                    </tbody>
-                                   </Table>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {this.renderCustomers()}
+                                        </tbody>
+                                    </Table>
                                 </div>
 
                                 <div style={{ paddingTop: '20px' }}>
