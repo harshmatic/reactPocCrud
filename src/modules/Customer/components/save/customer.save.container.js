@@ -19,24 +19,26 @@ export class CustomerSave extends Component {
     this.state = {
       customer: {
         "customerID": "",
-        "customerName": "",
+        "firstname": "",
+        "lastname": "",
         "mobile": "",
         "landline": "",
-        "customerEmail": "",
+        "email": "",
         "dateOfBirth": moment(),
-        "customerAddress": "",
+        "address": "",
         "status": true,
         "distributorName": "",
         "distributorAddress": "",
         "distributorContact": "",
       },
       validation: {
-        "customerName": "",
+        "firstname": "",
+        "lastname": "",
         "mobile": "",
         //"landline": "",
-        "customerEmail": "",
+        "email": "",
         "dateOfBirth": "",
-        "customerAddress": "",
+        "address": "",
         //"status": "",
         "distributorName": "",
         "distributorAddress": "",
@@ -103,7 +105,7 @@ export class CustomerSave extends Component {
     let validations = Object.assign({}, this.state.validation);
     if (value.trim() == "") {
       validations[name] = "Required";
-    } else if (name === "customerEmail") {
+    } else if (name === "email") {
       if (EmailRegex.test(value)) {
         validations[name] = "";
       } else {
@@ -139,9 +141,10 @@ export class CustomerSave extends Component {
     });
   }
   ifFormValid() {
-    if (this.state.customer.customerAddress == null || this.state.customer.customerAddress.trim() === "" ||
-      this.state.customer.customerName == null || this.state.customer.customerName.trim() === "" ||
-      this.state.customer.customerEmail == null || this.state.customer.customerEmail.trim() === "" ||
+    if (this.state.customer.address == null || this.state.customer.address.trim() === "" ||
+      this.state.customer.firstname == null || this.state.customer.firstname.trim() === "" ||
+       this.state.customer.surname == null || this.state.customer.surname.trim() === "" ||
+      this.state.customer.email == null || this.state.customer.email.trim() === "" ||
       this.state.customer.dateOfBirth == null || this.state.customer.dateOfBirth === "" ||
       this.state.customer.distributorAddress == null || this.state.customer.distributorAddress.trim() === "" ||
       this.state.customer.distributorContact == null || this.state.customer.distributorContact.trim() === "" ||

@@ -23,13 +23,14 @@ export class CustomerListUi extends Component {
           return (
 
             <tr key={key} style={{ borderLeft: 'solid 5px', borderLeftColor: this.props.customers[key].status ? '#4dbd74' : '#f86c6b' }}>
+              <td data-title="National Id" >{this.props.customers[key].nationalID}</td>
               <td data-title="Customer Name">
                 <a href="" onClick={this.props.toggle.bind(this, key)}>
-                  {this.props.customers[key].customerName}
+                  {this.props.customers[key].firstname}  {this.props.customers[key].surname} 
                 </a>
               </td>
               <td data-title="Contact" >{this.props.customers[key].mobile}</td>
-              <td data-title="Email Id" >{this.props.customers[key].customerEmail}</td>
+              <td data-title="Email Id" >{this.props.customers[key].email}</td>
               <td data-title="DOB" >{moment(this.props.customers[key].dateOfBirth).format('D MMM, Y')} </td>
               <td data-title="Distributor Name" >{this.props.customers[key].distributorName}</td>
               <td data-title="Distributor Contact" >{this.props.customers[key].distributorContact}</td>
@@ -151,9 +152,10 @@ export class CustomerListUi extends Component {
                   <Table responsive id="table-to-xls" className="table table-bordered table-striped table-sm">
                     <thead>
                       <tr>
-                        <th onClick={this.props.handleSort.bind(this, 'customerName', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns" /></th>
+                        <th onClick={this.props.handleSort.bind(this, 'nationalID', 'asc')}>National Id<i className="fa fa-arrows-v arrow ns" /></th>
+                        <th onClick={this.props.handleSort.bind(this, 'firstname', 'asc')}>Customer Name<i className="fa fa-arrows-v arrow ns" /></th>
                         <th onClick={this.props.handleSort.bind(this, 'mobile', 'asc')}>Contact Details<i className="fa fa-arrows-v arrow ns" /></th>
-                        <th onClick={this.props.handleSort.bind(this, 'customerEmail', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
+                        <th onClick={this.props.handleSort.bind(this, 'email', 'asc')}>Email id<i className="fa fa-arrows-v arrow ns" /></th>
                         <th onClick={this.props.handleSort.bind(this, 'dateOfBirth', 'asc')}>Date of Birth<i className="fa fa-arrows-v arrow ns" /></th>
                         <th onClick={this.props.handleSort.bind(this, 'distributorName', 'asc')}>Distributor Name<i className="fa fa-arrows-v arrow ns" /></th>
                         <th onClick={this.props.handleSort.bind(this, 'distributorContact', 'asc')}>Distributor Contact<i className="fa fa-arrows-v arrow ns" /></th>
@@ -183,8 +185,12 @@ export class CustomerListUi extends Component {
                   <ModalHeader toggle={this.props.toggle.bind(this, '')}>Consumer Detail</ModalHeader>
                   <ModalBody>
                     <div className="row">
+                      <div className="col-lg-5"><strong>National Id : </strong></div>
+                      <div className="col-lg-7">{this.props.customer.nationalID}</div>
+                    </div>
+                    <div className="row">
                       <div className="col-lg-5"><strong>Customer Name : </strong></div>
-                      <div className="col-lg-7">{this.props.customer.customerName}</div>
+                      <div className="col-lg-7">{this.props.customer.firstname} {this.props.customer.lastname}</div>
                     </div>
                     <div className="row">
                       <div className="col-lg-5"><strong>Mobile :</strong></div>
@@ -196,7 +202,7 @@ export class CustomerListUi extends Component {
                     </div>
                     <div className="row">
                       <div className="col-lg-5"><strong>Email id : </strong></div>
-                      <div className="col-lg-7">{this.props.customer.customerEmail}</div>
+                      <div className="col-lg-7">{this.props.customer.email}</div>
                     </div>
                     <div className="row">
                       <div className="col-lg-5"><strong>Date of Birth :</strong></div>
@@ -204,11 +210,11 @@ export class CustomerListUi extends Component {
                     </div>
                     <div className="row">
                       <div className="col-lg-5"><strong>Customer Address :</strong></div>
-                      <div className="col-lg-7">{this.props.customer.customerAddress}</div>
+                      <div className="col-lg-7">{this.props.customer.address}</div>
                     </div>
                     <div className="row">
                       <div className="col-lg-5"><strong>Distributor Name : </strong></div>
-                      <div className="col-lg-7">{this.props.customer.customerName}</div>
+                      <div className="col-lg-7">{this.props.customer.distributorName}</div>
                     </div>
                     <div className="row">
                       <div className="col-lg-5"><strong>Distributor Contact :</strong></div>
