@@ -137,14 +137,15 @@ export class CustomerListUi extends Component {
                     {'   '}
                     <button onClick={this.props.toggleExportPdf.bind(this)} type="button" className="btn btn-primary button-custom-inner"><i className="fa fa-file-pdf-o"></i> Export as Pdf</button>
                   </div>
-                  <div className="col-md-4 search-custom">
+                  <div className={"col-md-4 search-custom has-spinner "+  (this.props.searching ? 'active' : '')}>
                     <input
+                      
                       id="search"
                       type="text"
                       onKeyUp={this.props.handleInputChange.bind(this)}
                       placeholder=" Search"
                       style={{ float: 'right', height: '35px' }} />
-
+                      <span className="spinner"><i className="fa fa-refresh fa-spin"></i></span>
                   </div>
                   <br /><br />
                 </div>

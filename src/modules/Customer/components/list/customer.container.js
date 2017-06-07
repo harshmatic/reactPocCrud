@@ -28,6 +28,7 @@ export class CustomerList extends Component {
       modalExportPdf: false,
       customer: {},
       pageCount: 0,
+      searching: false,
       pageSize: 0,
       totalCount: 0,
       currentPageNumber: 1,
@@ -195,6 +196,7 @@ export class CustomerList extends Component {
   handleInputChange(e) {
     var search = e.target.value;
     this.clearSearchRequests();
+    this.setState({searching:true});
     this.searchRequests.push(setTimeout(() => {
       axios.get(api + `/customers?searchQuery=` + search, config)
         .then(res => {
@@ -206,7 +208,8 @@ export class CustomerList extends Component {
             pageSize: pageSize,
             customers: customers,
             searchString: search,
-            loader: 'none'
+            loader: 'none',
+            searching:false
           });
         }).catch(err => {
           this.setState({
@@ -298,6 +301,7 @@ export class CustomerList extends Component {
   render() {
     return (
       <CustomerListUi
+        searching= {this.state.searching}
         customers={this.state.customers}
         containerState = {this.state}
         modal={this.state.modal}

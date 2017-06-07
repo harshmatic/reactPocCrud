@@ -17,13 +17,31 @@ export class CustomerSaveUi extends Component {
           <div className="card">
             <div className="card-header">
               <strong>Customer Form</strong>
+
             </div>
             <div className="card-block">
               <div className="row">
+
                 <div className="form-group  col-sm-6">
-                  <label htmlFor="company">Customer Name*</label>
+                  <label htmlFor="company">National ID*</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="company"
+                    placeholder="National ID"
+                    name='nationalid'
+                    onChange={this.props.handleInputChange}
+                    onBlur={this.props.validate}
+                    value={this.props.customer.nationalID} />
+                  <span style={styles.validationError}> {this.props.validation.nationalID}</span>
+                </div>
+              </div>
+              <div className="row">
+                <div className="form-group  col-sm-6">
                   <div className="row">
+
                     <div className="form-group  col-sm-6">
+                      <label htmlFor="company">First Name*</label>
                       <input
                         type="text"
                         className="form-control"
@@ -35,7 +53,9 @@ export class CustomerSaveUi extends Component {
                         value={this.props.customer.firstname} />
                       <span style={styles.validationError}> {this.props.validation.firstname}</span>
                     </div>
+
                     <div className="form-group  col-sm-6">
+                      <label htmlFor="company">Sur Name*</label>
                       <input
                         type="text"
                         className="form-control"
