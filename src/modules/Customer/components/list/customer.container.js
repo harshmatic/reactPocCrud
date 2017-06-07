@@ -9,13 +9,13 @@ import { createBrowserHistory } from 'history';
 import { ButtonDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import CheckAuthoriztion from '../../../../services/checkAuthoriztion';
 import { api } from '../../../config';
-import { CustomerList } from './customer.component';
+import { CustomerListUi } from './customer.component';
 export const history = createBrowserHistory();
 var config = {
   headers: { 'Cache-Control': "no-cache, no-store, must-revalidate", 'Content-Type': 'application/json' }
 
 };
-export class CustomerListContainer extends Component {
+export class CustomerList extends Component {
 
   constructor(props) {
     super(props);
@@ -297,7 +297,7 @@ export class CustomerListContainer extends Component {
   
   render() {
     return (
-      <CustomerList
+      <CustomerListUi
         customers={this.state.customers}
         containerState = {this.state}
         modal={this.state.modal}
@@ -314,23 +314,23 @@ export class CustomerListContainer extends Component {
         sortDir={this.state.sortDir}
         sort={this.state.sort}
         dropdownOpen={this.state.dropdownOpen}
-        toggleDropdown={this.toggleDropdown.bind(this)}
-        toggle={this.toggle.bind(this)}
-        toggleDelete={this.toggleDelete.bind(this)}
-        delete={this.delete.bind(this)}
-        handleInputChange={this.handleInputChange.bind(this)}
-        handlePageClick={this.handlePageClick.bind(this)}
-        toggleExport={this.toggleExport.bind(this)}
-        toggleExportPdf={this.toggleExportPdf.bind(this)}
-        export={this.export.bind(this)}
-        exportPdf={this.exportPdf.bind(this)}
-        delete={this.delete.bind(this)}
-        handleInputChange={this.handleInputChange.bind(this)}
-        handleSort={this.handleSort.bind(this)}
+        toggleDropdown={this.toggleDropdown}
+        toggle={this.toggle}
+        toggleDelete={this.toggleDelete}
+        delete={this.delete}
+        handleInputChange={this.handleInputChange}
+        handlePageClick={this.handlePageClick}
+        toggleExport={this.toggleExport}
+        toggleExportPdf={this.toggleExportPdf}
+        export={this.export}
+        exportPdf={this.exportPdf}
+        delete={this.delete}
+        handleInputChange={this.handleInputChange}
+        handleSort={this.handleSort}
           />
 
     )
   }
 }
 
-export default CustomerListContainer;
+export default CustomerList;

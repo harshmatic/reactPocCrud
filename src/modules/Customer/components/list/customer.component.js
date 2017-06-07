@@ -8,7 +8,7 @@ import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
 import CheckAuthoriztion from '../../../../services/checkAuthoriztion';
 
-export class CustomerList extends Component {
+export class CustomerListUi extends Component {
 
   constructor(props) {
     super(props);
@@ -284,5 +284,5 @@ export class CustomerList extends Component {
   }
 }
 
-export default CustomerList;
+export default CustomerListUi;
 // 

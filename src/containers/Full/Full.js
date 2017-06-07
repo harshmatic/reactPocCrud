@@ -5,8 +5,6 @@ import Sidebar from '../../components/Sidebar/';
 import Breadcrumb from '../../components/Breadcrumb/';
 import Aside from '../../components/Aside/';
 import Footer from '../../components/Footer/';
-import Customer from '../../views/Pages/Customer'
-import CustomerSave from '../../views/Pages/Customer/save'
 import Dashboard from '../../views/Dashboard/'
 import Charts from '../../views/Charts/'
 import Widgets from '../../views/Widgets/'
@@ -18,7 +16,8 @@ import SocialButtons from '../../views/Components/SocialButtons/'
 import Switches from '../../views/Components/Switches/'
 import Tables from '../../views/Components/Tables/'
 import Tabs from '../../views/Components/Tabs/'
-import {CustomerListContainer} from '../../modules/Customer/components/list/customer.container'
+import {CustomerList} from '../../modules/Customer/components/list/customer.container'
+import {CustomerSave} from '../../modules/Customer/components/save/customer.save.container'
 import FontAwesome from '../../views/Icons/FontAwesome/'
 import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/'
 import NotAuthorize from '../../views/Pages/NotAuthorize/NotAuthorize'
@@ -41,9 +40,8 @@ class Full extends Component {
             <div className="container-fluid">
               <Switch>
                 <Route path="/dashboard" name="Dashboard" component={Dashboard} />
-                <Route path="/demo" name="demo" component={CustomerListContainer} />
                 <Route path="/not-authorize" name="NotAuthorize" component={NotAuthorize} />
-                <Route exact path="/customer/list" name="Customer Page" component={Customer} />
+                <Route exact path="/customer/list" name="Customer Page" component={CustomerList} />
                 <Route exact path="/customer/add" name="Customer Add" component={CustomerSave} />
                 <Route exact path="/customer/edit/:employeeID" name="Customer Edit" component={CustomerSave} />
                 <Route path="/components/buttons" name="Buttons" component={Buttons} />
