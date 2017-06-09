@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import { BrowserRouter } from 'react-router-dom'
-import Validation from 'react-validation';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
 import { createBrowserHistory } from 'history';
 import { api } from '../../../config';
 import { CustomerSaveUi } from './customer.save.component';
-import { EmailRegex,DateRegex,NumberRegex,styles } from '../../../utils.const' 
+import { EmailRegex,DateRegex,NumberRegex } from '../../../utils.const' 
 export const history = createBrowserHistory();
 
 export class CustomerSave extends Component {
@@ -17,29 +13,51 @@ export class CustomerSave extends Component {
     super(props);
 
     this.state = {
+      customercustom: {
+        "mobile": "",
+        "email": "",
+        "distributorName": "",
+        "distributorAddress": "",
+        "distributorContact": "",
+      },
       customer: {
+        "nationalID": "",
         "customerID": "",
         "firstname": "",
         "lastname": "",
-        "mobile": "",
         "landline": "",
-        "email": "",
-        "dateOfBirth": moment(),
+        "dateOfBirth": "",
         "address": "",
         "status": true,
+        "mobile": "",
+        "email": "",
+        "distributorName": "",
+        "distributorAddress": "",
+        "distributorContact": "",
+      },
+      blankCustomer: {
+        "nationalID": "",
+        "customerID": "",
+        "firstname": "",
+        "lastname": "",
+        "landline": "",
+        "dateOfBirth": "",
+        "address": "",
+        "status": true,
+        "mobile": "",
+        "email": "",
         "distributorName": "",
         "distributorAddress": "",
         "distributorContact": "",
       },
       validation: {
+        "nationalID": "",
         "firstname": "",
         "lastname": "",
         "mobile": "",
-        //"landline": "",
         "email": "",
         "dateOfBirth": "",
         "address": "",
-        //"status": "",
         "distributorName": "",
         "distributorAddress": "",
         "distributorContact": ""
@@ -52,6 +70,7 @@ export class CustomerSave extends Component {
     this.save = this.save.bind(this);
     this.validate = this.validate.bind(this);
     this.ifFormValid = this.ifFormValid.bind(this);
+    this.validateId = this.validateId.bind(this);
   }
 
   componentWillMount() {
@@ -82,10 +101,10 @@ export class CustomerSave extends Component {
         .get(api + `/customers/` + this.props.match.params.employeeID)
         .then(res => {
           const customer = res.data
-          this.setState({ customer });
+          this.setState({ customer,nationalId:false });
         });
     } else {
-      this.setState({ disableSave: true })
+      this.setState({ disableSave: true,nationalId:true })
     }
   }
   handleInputChange(event) {
@@ -98,6 +117,34 @@ export class CustomerSave extends Component {
       customer: formData
     });
   }
+
+  handleIdChange(event) {
+    const value = event.target.value;
+
+    this.setState({
+      nationalId: value
+    });
+  }
+
+  validateId() {
+     axios
+        .post(api + `/customers/validate`, {NationalID:document.getElementById("id").value})
+        .then(res => {
+          if (res.data.errorOcurred=='true') {
+             this.setState({customer:this.state.blankCustomer})
+            toast.error(res.data.errorMessage);
+          } else {
+            
+             this.setState({customer:Object.assign(res.data, this.state.customercustom)})
+             toast.success("Valid National Id");
+          }
+        }).catch(err => {
+          toast.error("Something went wrong");
+
+        });
+    //alert(document.getElementById("NationalID").value)
+  }
+
   validate(event) {
     const target = event.target;
     const value = target.value;
@@ -122,6 +169,12 @@ export class CustomerSave extends Component {
         validations[name] = "";
       } else {
         validations[name] = "Not a valid contact number"
+      }
+    } else if (name === "nationalId") {
+      if (NumberRegex.test(value)) {
+        validations[name] = "";
+      } else {
+        validations[name] = "Not a valid National ID"
       }
     } else {
       validations[name] = "";
@@ -156,7 +209,7 @@ export class CustomerSave extends Component {
     return false
   }
   save() {
-    if (this.state.customer.customerID == "") {
+    if (this.state.customer.customerID == "" || !this.state.customer.customerID) {
       axios
         .post(api + `/customers`, this.state.customer)
         .then(res => {
@@ -187,6 +240,7 @@ export class CustomerSave extends Component {
       <CustomerSaveUi
         customer={this.state.customer}
         validation={this.state.validation}
+        nationalId={this.state.nationalId}
         handleChange={this.handleChange}
         handleInputChange={this.handleInputChange}
         save={this.save}
@@ -196,6 +250,7 @@ export class CustomerSave extends Component {
         save={this.save}
         validate={this.validate}
         ifFormValid={this.ifFormValid}
+        validateId={this.validateId}
       />
     )
   }

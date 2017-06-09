@@ -36,7 +36,8 @@ export class CustomerListUi extends Component {
               <td data-title="Distributor Contact" >{this.props.customers[key].distributorContact}</td>
               <td data-title="Actions">
                 <div className="screen">
-                  <div className="hide-mobile">
+                  {/*<div className="hide-mobile">*/}
+                     <div>
                     <CheckAuthoriztion permissions={['OB.U']}>
                       <Link to={'/customer/edit/' + this.props.customers[key].customerID}>
                         <span className="fa fa-pencil edit"></span>
@@ -46,7 +47,7 @@ export class CustomerListUi extends Component {
                       <span className="fa fa-trash-o delete" onClick={this.props.toggleDelete.bind(this, key)}></span>
                     </CheckAuthoriztion>
                   </div>
-                  <div className="mobile">
+                  {/*<div className="mobile">
                     <Dropdown isOpen={this.props.dropdownOpen[key]} toggle={this.props.toggleDropdown.bind(null, key)}>
                       <span onClick={this.props.toggleDropdown.bind(null, key)}
                         className=" active dropdown p-0"
@@ -70,7 +71,7 @@ export class CustomerListUi extends Component {
                         </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
-                  </div>
+                  </div>*/}
                 </div>
               </td>
             </tr>

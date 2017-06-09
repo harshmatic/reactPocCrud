@@ -20,29 +20,56 @@ export class CustomerSaveUi extends Component {
 
             </div>
             <div className="card-block">
+               {this.props.nationalId &&
               <div className="row">
-
-                <div className="form-group  col-sm-6">
+                <div className="form-group  col-sm-3">
                   <label htmlFor="company">National ID*</label>
                   <input
                     type="text"
                     className="form-control"
-                    id="company"
+                    id="id"
                     placeholder="National ID"
-                    name='nationalid'
-                    onChange={this.props.handleInputChange}
-                    onBlur={this.props.validate}
-                    value={this.props.customer.nationalID} />
-                  <span style={styles.validationError}> {this.props.validation.nationalID}</span>
+                    name='id'
+                   //onChange={this.props.handleIdChange}
+                    //onBlur={this.props.validate}
+                    //value={this.props.nationalId} 
+                    />
+                  {/*<span style={styles.validationError}> {this.props.validation.NationalID}</span>*/}
+                </div>
+                <div className="form-group  col-sm-2">
+                  <label htmlFor="company">&nbsp; </label>
+                  <button onClick={this.props.validateId}
+                    className="btn btn-primary form-control">
+                    Validate
+                  </button>
                 </div>
               </div>
+               }
+                <form id="form">
               <div className="row">
-                <div className="form-group  col-sm-6">
+                {this.props.customer.nationalID &&
+                <div className="form-group col-sm-4">
+                  
+                  <label htmlFor="city">National ID</label><br />
+                  {/*<DatePicker
+                    selected={moment(this.props.customer.dateOfBirth)}
+                    onChange={this.props.handleChange}
+                    className="form-control"
+                    id="dob"
+                    name='dateOfBirth'
+                    onBlur={this.props.validate}
+                    placeholder="Enter  DOB" />
+                  <span style={styles.validationError}> {this.props.validation.dateOfBirth}</span>*/}
+                 
+                  <span className="form-control" htmlFor="company">{this.props.customer.nationalID}</span>
+                </div>
+                  }
+                <div className="form-group  col-sm-4">
                   <div className="row">
-
+                    {this.props.customer.firstname &&
                     <div className="form-group  col-sm-6">
                       <label htmlFor="company">First Name*</label>
-                      <input
+                      {/*<input
                         type="text"
                         className="form-control"
                         id="company"
@@ -50,13 +77,16 @@ export class CustomerSaveUi extends Component {
                         name='firstname'
                         onChange={this.props.handleInputChange}
                         onBlur={this.props.validate}
-                        value={this.props.customer.firstname} />
-                      <span style={styles.validationError}> {this.props.validation.firstname}</span>
+                        disabled='disabled'
+                        value={this.props.customer.firstname ? this.props.customer.firstname : ''} />
+                      <span style={styles.validationError}> {this.props.validation.firstname}</span>*/}
+                       <span className="form-control" htmlFor="company">{this.props.customer.firstname}</span>
                     </div>
-
+                    }
+                    {this.props.customer.surname &&
                     <div className="form-group  col-sm-6">
                       <label htmlFor="company">Sur Name*</label>
-                      <input
+                      {/*<input
                         type="text"
                         className="form-control"
                         id="company"
@@ -64,24 +94,33 @@ export class CustomerSaveUi extends Component {
                         name='surname'
                         onChange={this.props.handleInputChange}
                         onBlur={this.props.validate}
-                        value={this.props.customer.surname} />
-                      <span style={styles.validationError}> {this.props.validation.surname}</span>
+                        disabled='disabled'
+                        value={this.props.customer.surname ? this.props.customer.surname : ''} />
+                      <span style={styles.validationError}> {this.props.validation.surname}</span>*/}
+                      
+                      <span className="form-control" htmlFor="company" > {this.props.customer.surname}</span>
+                      
                     </div>
+                    }
                   </div>
                 </div>
-                <div className="form-group col-sm-6">
-                  <label htmlFor="vat">Contact Number*</label>
-                  <input
-                    type="text"
+                {this.props.customer.dateOfBirth &&
+                <div className="form-group col-sm-4">
+                  
+                  <label htmlFor="city">Date Of Birth*</label><br />
+                  {/*<DatePicker
+                    selected={moment(this.props.customer.dateOfBirth)}
+                    onChange={this.props.handleChange}
                     className="form-control"
-                    id="vat"
-                    name='mobile'
-                    onChange={this.props.handleInputChange}
-                    value={this.props.customer.mobile}
+                    id="dob"
+                    name='dateOfBirth'
                     onBlur={this.props.validate}
-                    placeholder="Enter  contact number" />
-                  <span style={styles.validationError}> {this.props.validation.mobile}</span>
+                    placeholder="Enter  DOB" />
+                  <span style={styles.validationError}> {this.props.validation.dateOfBirth}</span>*/}
+                 
+                  <span className="form-control" htmlFor="company">{moment(this.props.customer.dateOfBirth).format('Do MMM YYYY')}</span>
                 </div>
+                  }
               </div>
               <div className="row">
                 <div className="form-group col-sm-6">
@@ -98,17 +137,19 @@ export class CustomerSaveUi extends Component {
                   <span style={styles.validationError}> {this.props.validation.email}</span>
                 </div>
                 <div className="form-group col-sm-6">
-                  <label htmlFor="city">Date Of Birth*</label><br />
-                  <DatePicker
-                    selected={moment(this.props.customer.dateOfBirth)}
-                    onChange={this.props.handleChange}
+                  <label htmlFor="vat">Contact Number*</label>
+                  <input
+                    type="text"
                     className="form-control"
-                    id="dob"
-                    name='dateOfBirth'
+                    id="vat"
+                    name='mobile'
+                    onChange={this.props.handleInputChange}
+                    value={this.props.customer.mobile}
                     onBlur={this.props.validate}
-                    placeholder="Enter  DOB" />
-                  <span style={styles.validationError}> {this.props.validation.dateOfBirth}</span>
+                    placeholder="Enter  contact number" />
+                  <span style={styles.validationError}> {this.props.validation.mobile}</span>
                 </div>
+
               </div>
               <div className="row">
                 <div className="form-group col-sm-12">
@@ -121,7 +162,7 @@ export class CustomerSaveUi extends Component {
                     name='address'
                     onChange={this.props.handleInputChange}
                     onBlur={this.props.validate}
-                    value={this.props.customer.address}
+                    value={this.props.customer.address ?this.props.customer.address:''}
                     placeholder="Enter  present address"></textarea>
                   <span style={styles.validationError}> {this.props.validation.address}</span>
                 </div>
@@ -173,6 +214,7 @@ export class CustomerSaveUi extends Component {
               <div className="form-group">
                 <button onClick={this.props.save} className="btn btn-primary" disabled={this.props.ifFormValid()}>Save</button>
               </div>
+              </form>
             </div>
           </div>
         </div>

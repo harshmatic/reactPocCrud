@@ -96,7 +96,7 @@ class Sidebar extends Component {
               </ul>
             </li>*/}
             <li className="nav-item nav-dropdown">
-              <a className="nav-link nav-dropdown-toggle" href="#" onClick={this.handleClick.bind(this)}><i className="icon-people"></i> Customers</a>
+              <a className="nav-link nav-dropdown-toggle" href="/" onClick={this.handleClick.bind(this)}><i className="icon-people"></i> Customers</a>
               <ul className="nav-dropdown-items">
               <CheckAuthoriztion permissions={['OB.R']}>
                 <li className="nav-item">

@@ -89,17 +89,20 @@ export class CustomerList extends Component {
     });
   }
   handleSort(key, dir, e) {
+    var elem = e.target;
     this.setState({ loader: '' });
     var elementArray = document.getElementsByClassName('ns');
     var len = 0;
-    while (elementArray.length > len) {
-      elementArray[len].className = 'ns';
-      ++len;
-    }
-    document.getElementsByClassName('fa-long-arrow-up')[0] ? document.getElementsByClassName('fa-long-arrow-up')[0].className = 'ns' : true;
-    document.getElementsByClassName('fa-long-arrow-down')[0] ? document.getElementsByClassName('fa-long-arrow-down')[0].className = 'ns' : true;
+
+
     axios.get(api + `/customers?searchQuery=` + this.state.searchString + `&orderBy=` + key + ' ' + this.state.sortDir, config)
       .then(res => {
+        while (elementArray.length > len) {
+          elementArray[len].className = 'ns';
+          ++len;
+        }
+        document.getElementsByClassName('fa-long-arrow-up')[0] ? document.getElementsByClassName('fa-long-arrow-up')[0].className = 'ns' : true;
+        document.getElementsByClassName('fa-long-arrow-down')[0] ? document.getElementsByClassName('fa-long-arrow-down')[0].className = 'ns' : true;
         const customers = res.data.map(obj => obj)
         const totalPageCount = Math.ceil((JSON.parse(res.headers['x-pagination']).totalCount) / 10);
         const pageSize = JSON.parse(res.headers['x-pagination']).pageSize;
@@ -107,9 +110,16 @@ export class CustomerList extends Component {
         this.setState({ pageSize: pageSize });
         this.setState({ customers });
         this.setState({ loader: 'none' });
+        this.setState({ sortDir: this.state.sortDir == 'asc' ? 'desc' : 'asc' });
+        elem.children[0].className = this.state.sortDir == 'asc' ? 'fa fa-long-arrow-up arrow' : 'fa fa-long-arrow-down arrow'
+      }).catch(err => {
+        this.setState({
+          customer: {},
+          loader: 'none'
+        });
+        toast.error("Something went wrong");
       });
-    this.setState({ sortDir: this.state.sortDir == 'asc' ? 'desc' : 'asc' });
-    e.target.children[0].className = this.state.sortDir == 'asc' ? 'fa fa-long-arrow-up arrow' : 'fa fa-long-arrow-down arrow'
+
   }
 
   toggleDelete(key, e) {
@@ -196,7 +206,7 @@ export class CustomerList extends Component {
   handleInputChange(e) {
     var search = e.target.value;
     this.clearSearchRequests();
-    this.setState({searching:true});
+    this.setState({ searching: true });
     this.searchRequests.push(setTimeout(() => {
       axios.get(api + `/customers?searchQuery=` + search, config)
         .then(res => {
@@ -209,7 +219,7 @@ export class CustomerList extends Component {
             customers: customers,
             searchString: search,
             loader: 'none',
-            searching:false
+            searching: false
           });
         }).catch(err => {
           this.setState({
@@ -297,13 +307,13 @@ export class CustomerList extends Component {
 
 
 
-  
+
   render() {
     return (
       <CustomerListUi
-        searching= {this.state.searching}
+        searching={this.state.searching}
         customers={this.state.customers}
-        containerState = {this.state}
+        containerState={this.state}
         modal={this.state.modal}
         modalDelete={this.state.modalDelete}
         modalExport={this.state.modalExport}
@@ -331,7 +341,7 @@ export class CustomerList extends Component {
         delete={this.delete}
         handleInputChange={this.handleInputChange}
         handleSort={this.handleSort}
-          />
+      />
 
     )
   }

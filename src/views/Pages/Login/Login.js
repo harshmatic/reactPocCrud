@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import {api} from '../../../config';
 import { toast } from 'react-toastify';
 class Login extends Component {
   constructor(props) {
@@ -14,7 +13,7 @@ class Login extends Component {
   }
   login(){
     if(this.state.username!=="" && this.state.password!==""){
-          axios.post(`http://192.168.101.162:6058/api/auth/token`,this.state)
+          axios.post( `http://192.168.101.21:6059/api/auth/token`,this.state)
                 .then(res => {
                    localStorage.setItem('accessToken',res.data.token) 
                    toast.success('Login Successfull');
@@ -22,7 +21,7 @@ class Login extends Component {
                    this.getUserDetails();
                 }).catch(err => {
                     toast.error(err.response.data);
-                });;
+                });
     }  
   }
   getPermissions(){

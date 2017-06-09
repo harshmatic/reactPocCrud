@@ -15,8 +15,8 @@ const routes = {
   '/customer': 'Customer',
   '/customer/add': 'Customer Add',
   '/customer/edit/:employeeID': 'Customer Edit',
-  '/customer/edit': 'Customer Edit',
-  '/icons': 'Icons',
+'/customer/edit': 'Customer Edit',  
+'/icons': 'Icons',
   '/icons/font-awesome': 'Font Awesome',
   '/icons/simple-line-icons': 'Simple Line Icons',
   '/widgets': 'Widgets'
