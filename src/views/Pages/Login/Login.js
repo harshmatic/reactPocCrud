@@ -1,51 +1,69 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      UserName:"",
-      Password:""
+      UserName: "",
+      Password: "",
+      disabled: false
     }
-    this.login=this.login.bind(this);
-    this.getPermissions=this.getPermissions.bind(this);
+    this.login = this.login.bind(this);
+    this.getPermissions = this.getPermissions.bind(this);
   }
-  login(){
-    if(this.state.username!=="" && this.state.password!==""){
-          axios.post( `http://192.168.101.21:6059/api/auth/token`,this.state)
-                .then(res => {
-                   localStorage.setItem('accessToken',res.data.token) 
-                   toast.success('Login Successfull');
-                   this.getPermissions();
-                   this.getUserDetails();
-                }).catch(err => {
-                    toast.error(err.response.data);
-                });
-    }  
+  login() {
+      if (this.state.UserName === '' && this.state.Password === '') {
+      toast.error("Please Enter Username and Password");
+    }
+    else if (this.state.UserName === '') {
+      toast.error("Please Enter Username");
+      return;
+    } else if (this.state.Password === '') {
+      toast.error("Please Enter Password");
+      return;
+    }
+    this.setState({ disabled: true });
+    if (this.state.username !== "" && this.state.password !== "") {
+      axios.post(`http://192.168.101.21:6059/api/auth/token`, this.state)
+        .then(res => {
+          localStorage.setItem('accessToken', res.data.token)
+          toast.success('Login Successfull');
+          this.getPermissions();
+          this.getUserDetails();
+        }).catch(err => {
+
+          toast.error(err.response.data);
+          this.setState({ disabled: false });
+        });
+    }
   }
-  getPermissions(){
-    let headers={
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-          }
-        axios.get(`http://192.168.101.162:6058/api/permissions`, {headers})
-                .then(res => {
-                   localStorage.setItem('loggedInUserPermission',JSON.stringify(res.data)) 
-                    this.props.history.push('/customer/list');
-                });
+  getPermissions() {
+    let headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+    }
+    axios.get(`http://192.168.101.21:6059/api/permissions`, { headers })
+      .then(res => {
+        localStorage.setItem('loggedInUserPermission', JSON.stringify(res.data))
+        //this.props.history.push('/customer/list');
+      }).catch(err => {
+        toast.error(err.response.data);
+      });
   }
   getUserDetails() {
-    let headers={
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-          }
-        axios.get(`http://192.168.101.162:6058/api/profile`, {headers})
-                .then(res => {
-                   localStorage.setItem('loggedInUserDetails',JSON.stringify(res.data)) 
-                    this.props.history.push('/customer/list');
-                });
-    
+    let headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+    }
+    axios.get(`http://192.168.101.21:6059/api/profile`, { headers })
+      .then(res => {
+        localStorage.setItem('loggedInUserDetails', JSON.stringify(res.data))
+        this.props.history.push('/customer/list');
+      }).catch(err => {
+        toast.error(err.response.data);
+      });
+
   }
   render() {
     return (
@@ -62,17 +80,19 @@ class Login extends Component {
                       <span className="input-group-addon">
                         <i className="icon-user"></i>
                       </span>
-                      <input type="text" value={this.state.UserName} onChange={(e)=>this.setState({UserName:e.target.value})} className="form-control" placeholder="Username"/>
+                      <input type="text" value={this.state.UserName} onChange={(e) => this.setState({ UserName: e.target.value })} disabled={this.state.disabled} className="form-control" placeholder="Username" />
                     </div>
                     <div className="input-group mb-4">
                       <span className="input-group-addon">
                         <i className="icon-lock"></i>
                       </span>
-                      <input type="password" value={this.state.Password} onChange={(e)=>this.setState({Password:e.target.value})}  className="form-control" placeholder="Password"/>
+                      <input type="password" value={this.state.Password} onChange={(e) => this.setState({ Password: e.target.value })} disabled={this.state.disabled} className="form-control" placeholder="Password" />
                     </div>
                     <div className="row">
-                      <div className="col-6">
+                      <div className="col-6 has-spinner">
+
                         <button type="button" onClick={this.login} className="btn btn-primary px-4">Login</button>
+                        <span className="spinner"><i className="fa fa-refresh fa-spin"></i></span>
                       </div>
                       <div className="col-6 text-right">
                         <button type="button" className="btn btn-link px-0">Forgot password?</button>

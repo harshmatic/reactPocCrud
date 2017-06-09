@@ -105,7 +105,7 @@ class Sidebar extends Component {
               </CheckAuthoriztion>
               <CheckAuthoriztion permissions={['OB.C']}>
                 <li className="nav-item">
-                  <NavLink to={'/customer/add'} className="nav-link" activeClassName="active"><i className="icon-user-follow"></i> Add New Customer</NavLink>
+                  <NavLink to='/customer/add' className="nav-link" activeClassName="active"><i className="icon-user-follow"></i> Add New Customer</NavLink>
                 </li>
               </CheckAuthoriztion>
                 

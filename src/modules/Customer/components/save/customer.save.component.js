@@ -20,7 +20,7 @@ export class CustomerSaveUi extends Component {
 
             </div>
             <div className="card-block">
-               {this.props.nationalId &&
+               {(this.props.nationalId === null || this.props.nationalId)  &&
               <div className="row">
                 <div className="form-group  col-sm-3">
                   <label htmlFor="company">National ID*</label>
@@ -45,7 +45,6 @@ export class CustomerSaveUi extends Component {
                 </div>
               </div>
                }
-                <form id="form">
               <div className="row">
                 {this.props.customer.nationalID &&
                 <div className="form-group col-sm-4">
@@ -123,6 +122,25 @@ export class CustomerSaveUi extends Component {
                   }
               </div>
               <div className="row">
+                 {this.props.customer.address &&
+                <div className="form-group col-sm-12">
+                  <label htmlFor="postal-code">Present Address*</label>
+                  {/*<textarea
+                    id="address"
+                    name="textarea-input"
+                    rows="4"
+                    className="form-control"
+                    name='address'
+                    onChange={this.props.handleInputChange}
+                    onBlur={this.props.validate}
+                    value={this.props.customer.address ?this.props.customer.address:''}
+                    placeholder="Enter  present address"></textarea>
+                  <span style={styles.validationError}> {this.props.validation.address}</span>*/}
+                  <span className="form-control" htmlFor="company">{this.props.customer.address ?this.props.customer.address:''}</span>
+                </div>
+                 }
+              </div>
+              <div className="row">
                 <div className="form-group col-sm-6">
                   <label htmlFor="street">Email ID*</label>
                   <input
@@ -151,22 +169,7 @@ export class CustomerSaveUi extends Component {
                 </div>
 
               </div>
-              <div className="row">
-                <div className="form-group col-sm-12">
-                  <label htmlFor="postal-code">Present Address*</label>
-                  <textarea
-                    id="address"
-                    name="textarea-input"
-                    rows="4"
-                    className="form-control"
-                    name='address'
-                    onChange={this.props.handleInputChange}
-                    onBlur={this.props.validate}
-                    value={this.props.customer.address ?this.props.customer.address:''}
-                    placeholder="Enter  present address"></textarea>
-                  <span style={styles.validationError}> {this.props.validation.address}</span>
-                </div>
-              </div>
+              
               <div className="row">
                 <div className="form-group col-sm-6">
                   <label htmlFor="country">Distributor Name*</label>
@@ -214,7 +217,6 @@ export class CustomerSaveUi extends Component {
               <div className="form-group">
                 <button onClick={this.props.save} className="btn btn-primary" disabled={this.props.ifFormValid()}>Save</button>
               </div>
-              </form>
             </div>
           </div>
         </div>

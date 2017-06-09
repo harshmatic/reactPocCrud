@@ -90,10 +90,14 @@ export class CustomerSave extends Component {
         if (logggedInUserPermission.indexOf('OB.C') === -1) {
           window.location.href = '/#/not-authorize'
           return;
-        }
+        } 
       }
 
     }
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({customer:this.state.blankCustomer,nationalId:null})
+    
   }
   componentDidMount() {
     if (this.props.match.params.employeeID) {
@@ -209,6 +213,7 @@ export class CustomerSave extends Component {
     return false
   }
   save() {
+    debugger
     if (this.state.customer.customerID == "" || !this.state.customer.customerID) {
       axios
         .post(api + `/customers`, this.state.customer)
