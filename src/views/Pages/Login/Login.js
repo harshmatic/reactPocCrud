@@ -13,8 +13,9 @@ class Login extends Component {
     this.getPermissions = this.getPermissions.bind(this);
   }
   login() {
-      if (this.state.UserName === '' && this.state.Password === '') {
+    if (this.state.UserName === '' && this.state.Password === '') {
       toast.error("Please Enter Username and Password");
+      return
     }
     else if (this.state.UserName === '') {
       toast.error("Please Enter Username");
